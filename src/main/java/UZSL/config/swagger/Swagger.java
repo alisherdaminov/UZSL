@@ -1,4 +1,4 @@
-package UZSL.config;
+package UZSL.config.swagger;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-public class SwaggerConfig {
+public class Swagger {
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -25,10 +25,10 @@ public class SwaggerConfig {
                 .contact(new Contact()
                         .name("Alisher")
                         .email("alisherdaminov135@gmail.com")
-                        .url("https://github.com/Alisher19121994/hotels.uz")
+                        .url("https://github.com/alisherdaminov/UZSL")
                 )
                 .license(new License()
-                        .name("hotels.uz")
+                        .name("UZSL")
 
                 );
 
