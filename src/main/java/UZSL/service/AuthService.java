@@ -40,6 +40,7 @@ public class AuthService {
         user.setUsername(userCreated.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(userCreated.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
+        userRepository.save(user);
         rolesService.createRole(user.getUserId(), UzSlRoles.ROLE_USER);
         return new AppResponse<>("User successfully registered!");
     }
@@ -65,6 +66,7 @@ public class AuthService {
         dto.setFullName(user.getFullName());
         dto.setUsername(user.getUsername());
         UzSlRoles uzSlRole = rolesRepository.findByUzSlRoles(user.getUserId());
+        dto.setRoles(uzSlRole);
         dto.setJwtToken(JwtUtil.encode(user.getUsername(), user.getUserId(), uzSlRole));
         return dto;
     }

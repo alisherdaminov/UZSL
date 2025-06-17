@@ -16,7 +16,7 @@ public class ResponseDTO {
     private String fullName;
     private String username;
     private String password;
-    private UzSlRoles uzSlRoles;
+    private UzSlRoles roles;
     private String jwtToken;
     private LocalDateTime createdAt;
 }
