@@ -1,8 +1,8 @@
-package UZSL.service;
+package UZSL.service.auth;
 
-import UZSL.entity.RolesEntity;
+import UZSL.entity.auth.RolesEntity;
 import UZSL.enums.UzSlRoles;
-import UZSL.repository.RolesRepository;
+import UZSL.repository.auth.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

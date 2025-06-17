@@ -1,6 +1,6 @@
-package UZSL.repository;
+package UZSL.repository.auth;
 
-import UZSL.entity.RolesEntity;
+import UZSL.entity.auth.RolesEntity;
 import UZSL.enums.UzSlRoles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

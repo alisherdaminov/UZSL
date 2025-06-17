@@ -1,14 +1,14 @@
-package UZSL.service;
+package UZSL.service.auth;
 
 import UZSL.config.util.JwtUtil;
-import UZSL.dto.AppResponse;
-import UZSL.dto.LoginDTO;
-import UZSL.dto.ResponseDTO;
-import UZSL.dto.UserCreated;
-import UZSL.entity.UserEntity;
+import UZSL.dto.app_response.AppResponse;
+import UZSL.dto.auth.LoginDTO;
+import UZSL.dto.auth.ResponseDTO;
+import UZSL.dto.auth.UserCreated;
+import UZSL.entity.auth.UserEntity;
 import UZSL.enums.UzSlRoles;
-import UZSL.repository.RolesRepository;
-import UZSL.repository.UserRepository;
+import UZSL.repository.auth.RolesRepository;
+import UZSL.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

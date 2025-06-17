@@ -1,4 +1,4 @@
-package UZSL.dto;
+package UZSL.dto.auth;
 
 import UZSL.enums.UzSlRoles;
 import lombok.AllArgsConstructor;

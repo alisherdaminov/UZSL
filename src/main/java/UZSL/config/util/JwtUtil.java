@@ -1,6 +1,6 @@
 package UZSL.config.util;
 
-import UZSL.dto.JwtDTO;
+import UZSL.dto.auth.JwtDTO;
 import UZSL.enums.UzSlRoles;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

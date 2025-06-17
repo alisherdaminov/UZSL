@@ -1,10 +1,11 @@
 package UZSL.controller;
 
-import UZSL.dto.AppResponse;
-import UZSL.dto.LoginDTO;
-import UZSL.dto.ResponseDTO;
-import UZSL.dto.UserCreated;
-import UZSL.service.AuthService;
+import UZSL.dto.app_response.AppResponse;
+import UZSL.dto.auth.LoginDTO;
+import UZSL.dto.auth.ResponseDTO;
+import UZSL.dto.auth.UserCreated;
+import UZSL.service.auth.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Auth", description = "User can use authorization and authentication for Uzbekistan super league's matches, news, videos and statistics")
 public class Auth {
 
     @Autowired

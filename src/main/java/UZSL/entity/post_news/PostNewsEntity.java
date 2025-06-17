@@ -1,5 +1,6 @@
-package UZSL.entity;
+package UZSL.entity.post_news;
 
+import UZSL.entity.auth.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ public class PostNewsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String uzSlPostId;
+    private String postNewsId;
     @Column(name = "title")
     private String title;
     @Column(name = "content")
@@ -26,7 +27,7 @@ public class PostNewsEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // uz_sl_user
+    // uz_sl_amin
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity userEntity;

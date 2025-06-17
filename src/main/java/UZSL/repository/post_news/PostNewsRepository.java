@@ -1,6 +1,6 @@
-package UZSL.repository;
+package UZSL.repository.post_news;
 
-import UZSL.entity.PostNewsEntity;
+import UZSL.entity.post_news.PostNewsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

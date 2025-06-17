@@ -1,7 +1,7 @@
 package UZSL.config.validation;
 
 import UZSL.config.util.JwtUtil;
-import UZSL.dto.JwtDTO;
+import UZSL.dto.auth.JwtDTO;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

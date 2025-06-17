@@ -1,4 +1,4 @@
-package UZSL.entity;
+package UZSL.entity.auth;
 
 import UZSL.enums.UzSlRoles;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package UZSL.dto;
+package UZSL.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;

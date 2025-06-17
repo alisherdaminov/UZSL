@@ -1,6 +1,6 @@
 package UZSL.config.validation;
 
-import UZSL.entity.UserEntity;
+import UZSL.entity.auth.UserEntity;
 import UZSL.enums.UzSlRoles;
 import lombok.Getter;
 import lombok.Setter;

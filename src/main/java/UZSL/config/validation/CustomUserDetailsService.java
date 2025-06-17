@@ -1,9 +1,9 @@
 package UZSL.config.validation;
 
-import UZSL.entity.UserEntity;
+import UZSL.entity.auth.UserEntity;
 import UZSL.enums.UzSlRoles;
-import UZSL.repository.UserRepository;
-import UZSL.repository.RolesRepository;
+import UZSL.repository.auth.UserRepository;
+import UZSL.repository.auth.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

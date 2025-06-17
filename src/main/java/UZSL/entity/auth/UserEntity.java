@@ -1,5 +1,6 @@
-package UZSL.entity;
+package UZSL.entity.auth;
 
+import UZSL.entity.post_news.PostNewsEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
