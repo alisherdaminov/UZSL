@@ -8,13 +8,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "admin")
+@Table(name = "user")
 @Getter
 @Setter
-public class AdminEntity {
+public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer adminId;
+    private Integer userId;
+    @Column(name = "full_name")
+    private String fullName;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
@@ -22,6 +25,11 @@ public class AdminEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "adminEntity", fetch = FetchType.LAZY)
-    private List<UzSLPostNewsEntity> uzSLPostNewsEntityList;
+    // uz_sl_roles
+    @OneToOne(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    private RolesEntity uzSlRolesEntity;
+
+    // uz_sl_post
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    private List<PostNewsEntity> uzSLPostEntities;
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "uzSl_post")
 @Getter
 @Setter
-public class UzSLPostNewsEntity {
+public class PostNewsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -19,15 +19,16 @@ public class UzSLPostNewsEntity {
     private String title;
     @Column(name = "content")
     private String content;
-    @Column(name = "image")
-    private String postImage;
+    @Column(name = "post_image_url")
+    private String postImageUrl;
     @Column(name = "author")
     private String author;
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    // uz_sl_user
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uz_sl_category_id", insertable = false, updatable = false)
-    private AdminEntity adminEntity;
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private UserEntity userEntity;
 
 }

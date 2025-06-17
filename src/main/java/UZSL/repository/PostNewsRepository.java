@@ -1,9 +1,9 @@
 package UZSL.repository;
 
-import UZSL.entity.AdminEntity;
+import UZSL.entity.PostNewsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AdminRepository extends JpaRepository<AdminEntity, Integer> {
+public interface PostNewsRepository extends JpaRepository<PostNewsEntity, String> {
 }
