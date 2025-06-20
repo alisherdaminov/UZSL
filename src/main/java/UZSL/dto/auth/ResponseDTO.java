@@ -18,5 +18,6 @@ public class ResponseDTO {
     private String password;
     private UzSlRoles roles;
     private String jwtToken;
+    private String refreshToken;
     private LocalDateTime createdAt;
 }

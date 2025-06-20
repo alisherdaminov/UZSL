@@ -28,6 +28,8 @@ public class AuthService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private RolesRepository rolesRepository;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     // user registration
     public AppResponse<String> userRegistration(UserCreated userCreated) {
@@ -68,6 +70,7 @@ public class AuthService {
         UzSlRoles uzSlRole = rolesRepository.findByUzSlRoles(user.getUserId());
         dto.setRoles(uzSlRole);
         dto.setJwtToken(JwtUtil.encode(user.getUsername(), user.getUserId(), uzSlRole));
+        dto.setRefreshToken(refreshTokenService.createRefreshToken(user.getUserId()).getRefreshToken());
         return dto;
     }
 }

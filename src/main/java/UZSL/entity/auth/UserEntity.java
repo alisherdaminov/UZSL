@@ -33,4 +33,8 @@ public class UserEntity {
     // uz_sl_post
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     private List<PostNewsEntity> uzSLPostEntities;
+
+    //refresh
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private RefreshTokenEntity refreshToken;
 }
