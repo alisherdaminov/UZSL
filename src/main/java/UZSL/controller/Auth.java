@@ -13,10 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -48,10 +45,15 @@ public class Auth {
                 .map(refreshTokenService::isValidToken)
                 .orElseThrow(() -> new RuntimeException("Refresh token is not found!"));
 
-        String generateToken = JwtUtil.encode(entity.getUser().getUsername(), entity.getUser().getUserId(),
+        String generatedToken = JwtUtil.encode(entity.getUser().getUsername(), entity.getUser().getUserId(),
                 entity.getUser().getUzSlRolesEntity().getUzSlRoles());
 
-        return ResponseEntity.ok().body(new AppResponse<>(generateToken, "success", new Date()));
+        return ResponseEntity.ok().body(new AppResponse<>(generatedToken, "success", new Date()));
+    }
+
+    @PostMapping("/logout/{userId}")
+    public void logout(@PathVariable("userId") Integer userId, String refreshToken) {
+        authService.logout(userId, refreshToken);
     }
 
 }

@@ -1,6 +1,8 @@
 package UZSL.service.auth;
 
+import UZSL.config.util.SpringSecurityUtil;
 import UZSL.entity.auth.RefreshTokenEntity;
+import UZSL.entity.auth.UserEntity;
 import UZSL.exception.AppBadException;
 import UZSL.repository.auth.RefreshTokenRepository;
 import UZSL.repository.auth.UserRepository;
@@ -40,5 +42,14 @@ public class RefreshTokenService {
             throw new AppBadException("Refresh token is expired!");
         }
         return entity;
+    }
+
+    public void deleterRefreshToken(Integer userId, String refreshToken) {
+        Optional<UserEntity> optional = userRepository.findById(userId);
+        if (optional.isEmpty()) {
+            throw new AppBadException("User id: " + userId + "is not found!");
+        }
+        UserEntity user = optional.get();
+        refreshTokenRepository.deleteByUserIdAndToken(user.getUserId(), refreshToken);
     }
 }

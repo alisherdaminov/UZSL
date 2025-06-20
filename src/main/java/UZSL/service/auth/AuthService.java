@@ -5,6 +5,7 @@ import UZSL.dto.app_response.AppResponse;
 import UZSL.dto.auth.LoginDTO;
 import UZSL.dto.auth.ResponseDTO;
 import UZSL.dto.auth.UserCreated;
+import UZSL.entity.auth.RefreshTokenEntity;
 import UZSL.entity.auth.UserEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.repository.auth.RolesRepository;
@@ -59,6 +60,11 @@ public class AuthService {
         }
         ResponseDTO responseDTO = buildResponseDTO(user);
         return new AppResponse<>(responseDTO, "success", new Date());
+    }
+
+    // logout
+    public void logout(Integer userId, String refreshToken) {
+        refreshTokenService.deleterRefreshToken(userId, refreshToken);
     }
 
     // DTO for Login
