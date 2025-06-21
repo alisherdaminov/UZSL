@@ -27,7 +27,10 @@ public class PostNewsEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // uz_sl_amin
+    // uz_sl_admin
+    @Column(name = "user_id")
+    private Integer userId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity userEntity;

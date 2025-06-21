@@ -14,6 +14,7 @@ public class RolesService {
     @Autowired
     private RolesRepository rolesRepository;
 
+    // creating of user's role
     public void createRole(Integer userId, UzSlRoles uzSlRoles) {
         RolesEntity roles = new RolesEntity();
         roles.setRoleUserId(userId);

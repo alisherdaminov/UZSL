@@ -52,8 +52,9 @@ public class Auth {
     }
 
     @PostMapping("/logout/{userId}")
-    public void logout(@PathVariable("userId") Integer userId, String refreshToken) {
+    public AppResponse<String> logout(@PathVariable("userId") Integer userId, String refreshToken) {
         authService.logout(userId, refreshToken);
+        return new AppResponse<>("Logged out!", "success", new Date());
     }
 
 }

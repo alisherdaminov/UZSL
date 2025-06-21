@@ -63,8 +63,9 @@ public class AuthService {
     }
 
     // logout
-    public void logout(Integer userId, String refreshToken) {
+    public AppResponse<String> logout(Integer userId, String refreshToken) {
         refreshTokenService.deleterRefreshToken(userId, refreshToken);
+        return new AppResponse<>();
     }
 
     // DTO for Login

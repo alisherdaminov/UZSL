@@ -8,12 +8,15 @@ import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.*;
 
 public class JwtUtil {
 
     private static final int tokenLiveTime = 1000 * 3600 * 24; // 1-day
     private static final String secretKey = "U6zBr2R9sFpAq7mLdEvKjNxPwYtGhZmXcVbJnQoTsWaSdFgHjKlMzXyCrVuBpLkJ";
+    private static final SecureRandom secureRandom = new SecureRandom(); // thread-safe
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
 
     public static String encode(String username, Integer id, UzSlRoles uzSlRoles) {
         Map<String, String> extraClaims = new HashMap<>();
@@ -43,6 +46,12 @@ public class JwtUtil {
         String strRole = (String) claims.get("userRole");
         UzSlRoles roleEnum = UzSlRoles.valueOf(strRole);
         return new JwtDTO(id, username, roleEnum);
+    }
+
+    public static String generateRefreshToken() {
+        byte[] randomBytes = new byte[64];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
     }
 
     private static SecretKey getSignInKey() {

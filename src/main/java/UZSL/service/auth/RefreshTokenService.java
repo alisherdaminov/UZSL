@@ -1,6 +1,5 @@
 package UZSL.service.auth;
 
-import UZSL.config.util.SpringSecurityUtil;
 import UZSL.entity.auth.RefreshTokenEntity;
 import UZSL.entity.auth.UserEntity;
 import UZSL.exception.AppBadException;
@@ -14,26 +13,29 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import static UZSL.config.util.JwtUtil.generateRefreshToken;
+
 @Service
 public class RefreshTokenService {
 
-    @Value("${jwt.refreshExpirationMs}")
-    private Long refreshTokenDuration;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    // creation of Refresh Token
     public RefreshTokenEntity createRefreshToken(Integer userId) {
         RefreshTokenEntity entity = new RefreshTokenEntity();
         entity.setUser(userRepository.findById(userId).get());
-        entity.setRefreshToken(UUID.randomUUID().toString());
-        entity.setExpiryDate(Instant.now().plusMillis(refreshTokenDuration));
+        entity.setRefreshToken(generateRefreshToken());
+        long refreshExpirationMs = 1000L * 60 * 60 * 24 * 7;
+        entity.setExpiryDate(Instant.now().plusMillis(refreshExpirationMs));
         return refreshTokenRepository.save(entity);
     }
 
+    // finding of token
     public Optional<RefreshTokenEntity> findByToken(String refreshToken) {
-        return refreshTokenRepository.findByToken(refreshToken);
+        return refreshTokenRepository.findByRefreshToken(refreshToken);
     }
 
     public RefreshTokenEntity isValidToken(RefreshTokenEntity entity) {
@@ -44,6 +46,7 @@ public class RefreshTokenService {
         return entity;
     }
 
+    // deleting of token
     public void deleterRefreshToken(Integer userId, String refreshToken) {
         Optional<UserEntity> optional = userRepository.findById(userId);
         if (optional.isEmpty()) {
