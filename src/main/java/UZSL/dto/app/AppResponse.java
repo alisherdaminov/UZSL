@@ -1,4 +1,4 @@
-package UZSL.dto.app_response;
+package UZSL.dto.app;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

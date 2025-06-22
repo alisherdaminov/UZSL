@@ -1,11 +1,11 @@
-package UZSL.dto.post_news;
+package UZSL.dto.Home;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PostNewsCreatedDTO {
+public class HomeNewsCreatedDTO {
 
     private String title;
     private String content;

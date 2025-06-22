@@ -1,7 +1,7 @@
 package UZSL.controller;
 
 import UZSL.config.util.JwtUtil;
-import UZSL.dto.app_response.AppResponse;
+import UZSL.dto.app.AppResponse;
 import UZSL.dto.auth.LoginDTO;
 import UZSL.dto.auth.RefreshTokenRequest;
 import UZSL.dto.auth.ResponseDTO;

@@ -1,4 +1,4 @@
-package UZSL.entity.post_news;
+package UZSL.entity.home;
 
 import UZSL.entity.auth.UserEntity;
 import jakarta.persistence.*;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "uzSl_post")
 @Getter
 @Setter
-public class PostNewsEntity {
+public class HomeNewsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,6 +26,8 @@ public class PostNewsEntity {
     private String author;
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     // uz_sl_admin
     @Column(name = "user_id")

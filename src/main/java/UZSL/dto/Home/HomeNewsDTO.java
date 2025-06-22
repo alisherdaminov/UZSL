@@ -1,4 +1,4 @@
-package UZSL.dto.post_news;
+package UZSL.dto.Home;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostNewsDTO {
+public class HomeNewsDTO {
 
     private String postNewsId;
     private String title;
@@ -17,4 +17,5 @@ public class PostNewsDTO {
     private String postImageUrl;
     private String author;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

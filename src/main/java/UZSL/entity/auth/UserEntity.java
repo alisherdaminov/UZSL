@@ -1,6 +1,6 @@
 package UZSL.entity.auth;
 
-import UZSL.entity.post_news.PostNewsEntity;
+import UZSL.entity.home.HomeNewsEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class UserEntity {
 
     // uz_sl_post
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private List<PostNewsEntity> uzSLPostEntities;
+    private List<HomeNewsEntity> uzSLPostEntities;
 
     //refresh
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
