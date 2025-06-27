@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "uzSl_post")
@@ -20,8 +21,6 @@ public class HomeNewsEntity {
     private String title;
     @Column(name = "content")
     private String content;
-    @Column(name = "post_image_url")
-    private String postImageUrl;
     @Column(name = "author")
     private String author;
     @Column(name = "created_at")
@@ -36,5 +35,13 @@ public class HomeNewsEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity userEntity;
+
+
+    @Column(name = "home_image_id")
+    private String homeImageId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "home_image_id", insertable = false, updatable = false)
+    private HomeImageEntity homeImageEntityList;
 
 }

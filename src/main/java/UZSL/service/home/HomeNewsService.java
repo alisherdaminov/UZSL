@@ -23,23 +23,25 @@ public class HomeNewsService {
 
     @Autowired
     private HomeNewsRepository homeNewsRepository;
+    @Autowired
+    private HomeNewsImageService homeNewsImageService;
 
     // create post news
-    public HomeNewsDTO createPostNews(Integer userId, HomeNewsCreatedDTO postNewsCreatedDTO) {
+    public HomeNewsDTO createPostNews(Integer userId, HomeNewsCreatedDTO homeNewsCreatedDTO) {
         Integer currentUser = SpringSecurityUtil.getCurrentUserId();
         if (SpringSecurityUtil.hasRole(UzSlRoles.ROLE_USER) && !userId.equals(currentUser)) {
             throw new AppBadException("You do not have any permission to create this post news!");
         }
         if (SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && userId.equals(currentUser)) {
             HomeNewsEntity entity = new HomeNewsEntity();
-            entity.setTitle(postNewsCreatedDTO.getTitle());
-            entity.setContent(postNewsCreatedDTO.getContent());
-            // entity.setPostImageUrl();
+            entity.setTitle(homeNewsCreatedDTO.getTitle());
+            entity.setContent(homeNewsCreatedDTO.getContent());
+            entity.setHomeImageId(homeNewsCreatedDTO.getHomeImageCreatedDTO().getHomeImageCreatedId());
             entity.setUserId(currentUser);
-            entity.setAuthor(postNewsCreatedDTO.getAuthor());
+            entity.setAuthor(homeNewsCreatedDTO.getAuthor());
             entity.setCreatedAt(LocalDateTime.now());
             homeNewsRepository.save(entity);
-            return createWithoutContentPostNewsDTO(entity);
+            return createByUserIdPostNewsDTO(entity);
         }
         throw new AppBadException("Unauthorized attempt to create post!");
     }
@@ -75,7 +77,7 @@ public class HomeNewsService {
             String content = createdDTO.getContent();
             String author = createdDTO.getAuthor();
             entity.setUpdatedAt(LocalDateTime.now());
-            homeNewsRepository.updateHomeNews(title,content,author,postId);
+            homeNewsRepository.updateHomeNews(title, content, author, postId);
             return updatedContentPostNewsDTO(entity);
         }
         throw new AppBadException("Unauthorized attempt to update this post!");
@@ -91,8 +93,7 @@ public class HomeNewsService {
         HomeNewsDTO dto = new HomeNewsDTO();
         dto.setPostNewsId(entity.getPostNewsId());
         dto.setTitle(entity.getTitle());
-        dto.setContent(entity.getContent());
-        // dto.setPostImageUrl();
+        dto.setHomeImageDTO(homeNewsImageService.homeImageDTO(entity.getPostNewsId()));
         dto.setAuthor(entity.getAuthor());
         dto.setCreatedAt(entity.getCreatedAt());
         return dto;
@@ -103,7 +104,7 @@ public class HomeNewsService {
         HomeNewsDTO dto = new HomeNewsDTO();
         dto.setPostNewsId(entity.getPostNewsId());
         dto.setTitle(entity.getTitle());
-        // dto.setPostImageUrl();
+        dto.setHomeImageDTO(homeNewsImageService.homeImageDTO(entity.getPostNewsId()));
         dto.setAuthor(entity.getAuthor());
         dto.setUpdatedAt(entity.getUpdatedAt());
         return dto;
@@ -115,22 +116,12 @@ public class HomeNewsService {
         dto.setPostNewsId(entity.getPostNewsId());
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
-        // dto.setPostImageUrl();
+        dto.setHomeImageDTO(homeNewsImageService.homeImageDTO(entity.getPostNewsId()));
         dto.setAuthor(entity.getAuthor());
         dto.setCreatedAt(entity.getCreatedAt());
         return dto;
     }
 
-    // without content DTO
-    public HomeNewsDTO createWithoutContentPostNewsDTO(HomeNewsEntity entity) {
-        HomeNewsDTO dto = new HomeNewsDTO();
-        dto.setPostNewsId(entity.getPostNewsId());
-        dto.setTitle(entity.getTitle());
-        // dto.setPostImageUrl();
-        dto.setAuthor(entity.getAuthor());
-        dto.setCreatedAt(entity.getCreatedAt());
-        return dto;
-    }
 
 
 }

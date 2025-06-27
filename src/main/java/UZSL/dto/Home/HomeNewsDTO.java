@@ -1,5 +1,6 @@
 package UZSL.dto.Home;
 
+import UZSL.dto.Home.image.HomeImageDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ public class HomeNewsDTO {
     private String postNewsId;
     private String title;
     private String content;
-    private String postImageUrl;
+    private HomeImageDTO homeImageDTO;
     private String author;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

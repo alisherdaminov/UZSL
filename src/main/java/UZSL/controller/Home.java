@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -22,9 +23,10 @@ public class Home {
     private HomeNewsService homeNewsService;
 
     @PostMapping("/{userId}")
-    public ResponseEntity<AppResponse<HomeNewsDTO>> createPostNews(@PathVariable("userId") Integer userId,
+    public ResponseEntity<AppResponse<HomeNewsDTO>> createPostNews(
+                                                                   @PathVariable("userId") Integer userId,
                                                                    @RequestBody HomeNewsCreatedDTO createdDTO) {
-        return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.createPostNews(userId, createdDTO),
+        return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.createPostNews( userId, createdDTO),
                 "success", new Date()));
     }
 
