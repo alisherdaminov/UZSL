@@ -62,7 +62,7 @@ public class HomeNewsService {
     }
 
     // all data update
-    public HomeNewsDTO updatePostNews(String postId, HomeNewsCreatedDTO createdDTO) {
+    public HomeNewsDTO updatePostNews(String postId, Integer userId, HomeNewsCreatedDTO createdDTO) {
         Optional<HomeNewsEntity> optional = homeNewsRepository.findById(postId);
         if (optional.isEmpty()) {
             throw new AppBadException("Post id: " + postId + "is not found!");
@@ -71,13 +71,21 @@ public class HomeNewsService {
         if (SpringSecurityUtil.hasRole(UzSlRoles.ROLE_USER) && !postNewsEntity.getPostNewsId().equals(postId)) {
             throw new AppBadException("You do not have any permission to update this post news!");
         }
+        String oldPhotoId = null;
+        if (!createdDTO.getHomeImageCreatedDTO().getHomeImageCreatedId().equals(postNewsEntity.getHomeImageId())) {
+            oldPhotoId = postNewsEntity.getHomeImageId();
+        }
         if (SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && postNewsEntity.getPostNewsId().equals(postId)) {
             HomeNewsEntity entity = new HomeNewsEntity();
             String title = createdDTO.getTitle();
             String content = createdDTO.getContent();
             String author = createdDTO.getAuthor();
+            entity.setHomeImageId(createdDTO.getHomeImageCreatedDTO().getHomeImageCreatedId());
             entity.setUpdatedAt(LocalDateTime.now());
             homeNewsRepository.updateHomeNews(title, content, author, postId);
+            if (oldPhotoId != null) {
+                homeNewsImageService.updatePhoto(oldPhotoId, userId);
+            }
             return updatedContentPostNewsDTO(entity);
         }
         throw new AppBadException("Unauthorized attempt to update this post!");
@@ -121,7 +129,6 @@ public class HomeNewsService {
         dto.setCreatedAt(entity.getCreatedAt());
         return dto;
     }
-
 
 
 }

@@ -26,5 +26,7 @@ public class HomeImageEntity {
     @Column(name = "createdAt")
     private LocalDateTime createdAt;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private HomeNewsEntity homeNewsEntity;
 
 }

@@ -15,5 +15,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HomeNewsImageRepository extends JpaRepository<HomeImageEntity, String> {
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE HomeImageEntity SET homeImageId =?2 WHERE homeNewsEntity.userId =?1")
+    void updatePhoto(Integer userId, String homeImageId);
+
 
 }

@@ -1,10 +1,13 @@
 package UZSL.service.home;
 
 import UZSL.config.util.SpringSecurityUtil;
+import UZSL.dto.Home.image.HomeImageCreatedDTO;
 import UZSL.dto.Home.image.HomeImageDTO;
+import UZSL.entity.auth.UserEntity;
 import UZSL.entity.home.HomeImageEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.exception.AppBadException;
+import UZSL.repository.auth.UserRepository;
 import UZSL.repository.home.HomeNewsImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,50 +34,57 @@ public class HomeNewsImageService {
 
     @Autowired
     private HomeNewsImageRepository homeNewsImageRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Value("${attach.upload.folder}")
     private String folderName;
     @Value("${attach.upload.url}")
     private String url;
 
     public HomeImageDTO uploadImage(MultipartFile file, Integer userId) {
-        if (SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) &&
-                userId.equals(SpringSecurityUtil.getCurrentUserId())) {
-            if (file.isEmpty()) {
-                throw new AppBadException("Photo is not found!");
-            }
-            try {
-                String pathFolder = getDateString();
-                String keyUUID = UUID.randomUUID().toString();
-                String extension = getExtension(Objects.requireNonNull(file.getOriginalFilename()));
-                File folder = new File(folderName + "/" + pathFolder);
-                if (!folder.exists()) {
-                    boolean result = folder.mkdirs();
-                }
-
-                Path path = Paths.get(folderName + "/" + pathFolder + "/" + keyUUID + "." + extension);
-                byte[] bytes = file.getBytes();
-                Files.write(path, bytes);
-                HomeImageEntity entity = new HomeImageEntity();
-                entity.setHomeImageId(keyUUID);
-                entity.setPath(pathFolder);
-                entity.setExtension(extension);
-                entity.setOrigenName(file.getOriginalFilename());
-                entity.setSize(file.getSize());
-                homeNewsImageRepository.save(entity);
-                return toDTO(entity);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if (!SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && !userId.equals(SpringSecurityUtil.getCurrentUserId())) {
+            throw new AppBadException("You are not allowed to upload images.");
         }
-        return null;
+
+        if (file.isEmpty()) {
+            throw new AppBadException("Photo is not found!");
+        }
+
+        try {
+            String pathFolder = getDateString();
+            String keyUUID = UUID.randomUUID().toString();
+            String extension = getExtension(Objects.requireNonNull(file.getOriginalFilename()));
+
+            File folder = new File(folderName + "/" + pathFolder);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            Path path = Paths.get(folderName + "/" + pathFolder + "/" + keyUUID + "." + extension);
+            Files.write(path, file.getBytes());
+
+            HomeImageEntity entity = new HomeImageEntity();
+            entity.setHomeImageId(keyUUID);
+            entity.setPath(pathFolder);
+            entity.setExtension(extension);
+            entity.setOrigenName(file.getOriginalFilename());
+            entity.setSize(file.getSize());
+            homeNewsImageRepository.save(entity);
+            return toDTO(entity);
+
+        } catch (IOException e) {
+            throw new AppBadException("File saving error: " + e.getMessage());
+        }
     }
+
 
     public ResponseEntity<Resource> downloadImage(String postId) {
         Optional<HomeImageEntity> optional = homeNewsImageRepository.findById(postId);
         if (optional.isEmpty()) {
             throw new AppBadException("Post id: " + postId + " is not found!");
         }
-        HomeImageEntity entity = optional.get();        Path filePath = Paths.get(folderName + "/" + entity.getPath() +
+        HomeImageEntity entity = optional.get();
+        Path filePath = Paths.get(folderName + "/" + entity.getPath() +
                 "/" + entity.getHomeImageId() + "." + entity.getExtension()).normalize();
         Resource resource;
         try {
@@ -89,12 +100,31 @@ public class HomeNewsImageService {
                     .contentType(MediaType.parseMediaType(contentType))
                     .body(resource);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AppBadException("Error while reading image file: " + e.getMessage());
         }
     }
+
     public String removeImage(String filename) {
         int dotIndex = filename.lastIndexOf(".");
         return (dotIndex > 0) ? filename.substring(0, dotIndex) : filename;
+    }
+
+    public boolean updatePhoto(String postId, Integer userId) {
+        Optional<HomeImageEntity> optionalImage = homeNewsImageRepository.findById(postId);
+        Optional<UserEntity> optionalUser = userRepository.findById(userId);
+
+        if (optionalImage.isEmpty() && optionalUser.isEmpty()) {
+            throw new AppBadException("Image id: " + postId + " or user id: " + userId + " is not found!");
+        }
+        HomeImageEntity entityImage = optionalImage.get();
+        UserEntity entityUser = optionalUser.get();
+        homeNewsImageRepository.updatePhoto(entityUser.getUserId(), entityImage.getHomeImageId());
+        File file = new File(folderName + "/" + entityImage.getPath() + "/" + entityImage.getHomeImageId());
+        boolean isExisted = false;
+        if (file.exists()) {
+            isExisted = file.delete();
+        }
+        return isExisted;
     }
 
     public HomeImageDTO toDTO(HomeImageEntity entity) {
@@ -122,6 +152,10 @@ public class HomeNewsImageService {
         int month = Calendar.getInstance().get(Calendar.MONTH);
         int day = Calendar.getInstance().get(Calendar.DATE);
         return year + "/" + month + "/" + day;
+    }
+
+    private String getDateString2() {
+        return LocalDate.now().toString(); // "2025-06-28"
     }
 
     public String getExtension(String filename) {

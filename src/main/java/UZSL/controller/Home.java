@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -24,9 +23,9 @@ public class Home {
 
     @PostMapping("/{userId}")
     public ResponseEntity<AppResponse<HomeNewsDTO>> createPostNews(
-                                                                   @PathVariable("userId") Integer userId,
-                                                                   @RequestBody HomeNewsCreatedDTO createdDTO) {
-        return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.createPostNews( userId, createdDTO),
+            @PathVariable("userId") Integer userId,
+            @RequestBody HomeNewsCreatedDTO createdDTO) {
+        return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.createPostNews(userId, createdDTO),
                 "success", new Date()));
     }
 
@@ -44,10 +43,11 @@ public class Home {
                 "success", new Date()));
     }
 
-    @PutMapping("/{postId}")
+    @PutMapping("/{postId}/{userId}")
     public ResponseEntity<AppResponse<HomeNewsDTO>> updatePostNews(@PathVariable("postId") String postId,
+                                                                   @PathVariable("userId") Integer userId,
                                                                    @RequestBody HomeNewsCreatedDTO createdDTO) {
-        return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.updatePostNews(postId, createdDTO),
+        return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.updatePostNews(postId, userId, createdDTO),
                 "success", new Date()));
     }
 
