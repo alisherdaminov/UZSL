@@ -1,4 +1,4 @@
-package UZSL.controller;
+package UZSL.controller.home;
 
 import UZSL.config.util.PageUtil;
 import UZSL.dto.app.AppResponse;
@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -21,6 +22,7 @@ public class Home {
     @Autowired
     private HomeNewsService homeNewsService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/{userId}")
     public ResponseEntity<AppResponse<HomeNewsDTO>> createPostNews(
             @PathVariable("userId") Integer userId,
@@ -29,12 +31,14 @@ public class Home {
                 "success", new Date()));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{postId}")
     public ResponseEntity<AppResponse<HomeNewsDTO>> getByUserIdPostNews(@PathVariable("postId") String postId) {
         return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.getByUserIdPostNews(postId),
                 "success", new Date()));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<AppResponse<PageImpl<HomeNewsDTO>>> getPostNewsList(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -43,6 +47,7 @@ public class Home {
                 "success", new Date()));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{postId}/{userId}")
     public ResponseEntity<AppResponse<HomeNewsDTO>> updatePostNews(@PathVariable("postId") String postId,
                                                                    @PathVariable("userId") Integer userId,
@@ -51,6 +56,7 @@ public class Home {
                 "success", new Date()));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{postId}")
     public ResponseEntity<AppResponse<HomeNewsDTO>> updatePostNews(@PathVariable("postId") String postId) {
         return ResponseEntity.ok().body(new AppResponse<>(homeNewsService.deletePostNews(postId),

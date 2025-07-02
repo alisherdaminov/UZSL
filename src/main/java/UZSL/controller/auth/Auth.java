@@ -1,4 +1,4 @@
-package UZSL.controller;
+package UZSL.controller.auth;
 
 import UZSL.config.util.JwtUtil;
 import UZSL.dto.app.AppResponse;

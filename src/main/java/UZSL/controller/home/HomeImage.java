@@ -1,4 +1,4 @@
-package UZSL.controller;
+package UZSL.controller.home;
 
 import UZSL.dto.Home.image.HomeImageDTO;
 import UZSL.dto.app.AppResponse;
@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,7 @@ public class HomeImage {
     @Autowired
     private HomeNewsImageService homeNewsImageService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/{userId}")
     public ResponseEntity<AppResponse<HomeImageDTO>> uploadImage(@RequestParam("file") MultipartFile file,
                                                                  @PathVariable("userId") Integer userId) {
@@ -27,6 +29,7 @@ public class HomeImage {
                 "success", new Date()));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{postId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable("postId") String postId) {
         return homeNewsImageService.downloadImage(postId);
