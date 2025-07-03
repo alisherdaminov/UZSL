@@ -13,6 +13,8 @@ public class ClubsMatchInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String clubsMatchInfoId;
+    @Column(name = "home_team_name")
+    private String homeTeamName;
     @Column(name = "home_team_logo")
     private String homeTeamLogo;
     @Column(name = "home_team_goal_number")
@@ -21,6 +23,8 @@ public class ClubsMatchInfoEntity {
     private String visitorTeamGoalNumber;
     @Column(name = "visitor_team_logo")
     private String visitorTeamLogo;
+    @Column(name = "visitor_team_name")
+    private String visitorTeamName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "matches_id")

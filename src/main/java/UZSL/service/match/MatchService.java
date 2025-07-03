@@ -49,12 +49,48 @@ public class MatchService {
         throw new AppBadException("Unauthorized attempt to create post");
     }
 
+    public MatchDTO getByIdMatchesData(String matchId) {
+        MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match id: " + matchId + " is not found!"));
+        return toDTO(entity);
+    }
+
+    public List<MatchDTO> getAllMatchesData() {
+        List<MatchEntity> entityList = matchRepository.findAll();
+        return entityList.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public MatchDTO updateMatch(String matchId, MatchCreatedDTO createdDTO) {
+        MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match not found!"));
+        entity.setMatchStartedDate(createdDTO.getMatchStartedDate());
+        entity.setMatchStartedTime(createdDTO.getMatchStartedTime());
+        List<ClubsMatchInfoEntity> updatedList = createdDTO.getClubsMatchInfoCreatedDTO().stream().map(
+                info -> {
+                    ClubsMatchInfoEntity club = new ClubsMatchInfoEntity();
+                    club.setVisitorTeamName(info.getVisitorTeamName());
+                    club.setHomeTeamGoalNumber(info.getHomeTeamGoalNumber());
+                    club.setVisitorTeamGoalNumber(info.getVisitorTeamGoalNumber());
+                    club.setVisitorTeamName(info.getVisitorTeamName());
+                    club.setMatchEntity(entity);
+                    return club;
+                }).collect(Collectors.toList());
+        entity.setClubsMatchInfoList(updatedList);
+        matchRepository.save(entity);
+        return toDTO(entity);
+    }
+
+    public String deleteMatchById(String matchId) {
+        matchRepository.deleteById(matchId);
+        return "Deleted: " + matchId;
+    }
+
     public ClubsMatchInfoEntity toClubsMatchInfoEntity(ClubsMatchInfoCreatedDTO createdDTO, MatchEntity entity) {
         ClubsMatchInfoEntity clubsEntity = new ClubsMatchInfoEntity();
+        clubsEntity.setHomeTeamName(createdDTO.getHomeTeamName());
         clubsEntity.setHomeTeamLogo(createdDTO.getHomeTeamLogo());
         clubsEntity.setHomeTeamGoalNumber(createdDTO.getHomeTeamGoalNumber());
         clubsEntity.setVisitorTeamGoalNumber(createdDTO.getVisitorTeamGoalNumber());
         clubsEntity.setVisitorTeamLogo(createdDTO.getVisitorTeamLogo());
+        clubsEntity.setVisitorTeamName(createdDTO.getVisitorTeamName());
         clubsEntity.setMatchEntity(entity);// Parent link
         clubsMatchInfoRepository.save(clubsEntity);
         return clubsEntity;
@@ -69,14 +105,17 @@ public class MatchService {
                 infoDto -> {
                     ClubsMatchInfoDTO clubsMatchInfoDTO = new ClubsMatchInfoDTO();
                     clubsMatchInfoDTO.setClubsMatchInfoId(infoDto.getClubsMatchInfoId());
+                    clubsMatchInfoDTO.setHomeTeamName(infoDto.getHomeTeamName());
                     clubsMatchInfoDTO.setHomeTeamLogo(infoDto.getHomeTeamLogo());
                     clubsMatchInfoDTO.setHomeTeamGoalNumber(infoDto.getHomeTeamGoalNumber());
                     clubsMatchInfoDTO.setVisitorTeamGoalNumber(infoDto.getVisitorTeamGoalNumber());
                     clubsMatchInfoDTO.setVisitorTeamLogo(infoDto.getVisitorTeamLogo());
+                    clubsMatchInfoDTO.setVisitorTeamName(infoDto.getVisitorTeamName());
                     return clubsMatchInfoDTO;
                 }
         ).collect(Collectors.toList());
         dto.setClubsMatchInfoDTOList(matchInfoDTOList);
         return dto;
     }
+
 }

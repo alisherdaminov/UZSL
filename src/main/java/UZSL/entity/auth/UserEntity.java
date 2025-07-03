@@ -1,6 +1,7 @@
 package UZSL.entity.auth;
 
 import UZSL.entity.home.HomeNewsEntity;
+import UZSL.entity.match.MatchLogoEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,4 +38,8 @@ public class UserEntity {
     //refresh
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<RefreshTokenEntity> refreshToken;
+
+    // matches club logo
+    @OneToOne(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private MatchLogoEntity logoEntityList;
 }
