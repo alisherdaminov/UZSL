@@ -1,8 +1,10 @@
 package UZSL.service.match;
 
 import UZSL.config.util.SpringSecurityUtil;
+import UZSL.dto.app.AppResponse;
 import UZSL.dto.match.image.MatchLogoDTO;
 import UZSL.entity.auth.UserEntity;
+import UZSL.entity.match.MatchEntity;
 import UZSL.entity.match.MatchLogoEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.exception.AppBadException;
@@ -92,16 +94,34 @@ public class MatchLogoService {
         }
     }
 
-    public boolean updateLogo(String matchId) {
+    public boolean updateHomeTeamLogo(String matchId) {
         MatchLogoEntity matchLogoEntity = matchLogoRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match id: " + matchId + " is not found!"));
         UserEntity userEntity = userRepository.findById(SpringSecurityUtil.getCurrentUserId()).orElseThrow(() -> new AppBadException("User not found!"));
-        matchLogoRepository.updateMatchLogo(userEntity.getUserId(), matchLogoEntity.getMatchLogoId());
+        matchLogoRepository.updateHomeTeamLogo(userEntity.getUserId(), matchLogoEntity.getMatchLogoId());
         File file = new File(folderName + "/" + matchLogoEntity.getPath() + "/" + matchLogoEntity.getMatchLogoId());
         boolean isExisted = false;
         if (file.exists()) {
             isExisted = file.delete();
         }
         return isExisted;
+    }
+
+    public boolean updateVisitorTeamLogo(String matchId) {
+        MatchLogoEntity matchLogoEntity = matchLogoRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match id: " + matchId + " is not found!"));
+        UserEntity userEntity = userRepository.findById(SpringSecurityUtil.getCurrentUserId()).orElseThrow(() -> new AppBadException("User not found!"));
+        matchLogoRepository.updateVisitorTeamLogo(userEntity.getUserId(), matchLogoEntity.getMatchLogoId());
+        File file = new File(folderName + "/" + matchLogoEntity.getPath() + "/" + matchLogoEntity.getMatchLogoId());
+        boolean isExisted = false;
+        if (file.exists()) {
+            isExisted = file.delete();
+        }
+        return isExisted;
+    }
+
+    public AppResponse<String> deleteLogo(String matchId) {
+        String removedLogoWithFile = removedLogo(matchId);
+        MatchEntity entity = matchLogoRepository.deleteMatchId(removedLogoWithFile);
+        return new AppResponse<>("Deleted! " + entity.getMatchId());
     }
 
     private String removedLogo(String filename) {

@@ -25,6 +25,8 @@ public class MatchService {
     private MatchRepository matchRepository;
     @Autowired
     private ClubsMatchInfoRepository clubsMatchInfoRepository;
+    @Autowired
+    private MatchLogoService matchLogoService;
 
     public MatchDTO createMatch(Integer userId, MatchCreatedDTO matchCreatedDTO) {
         Integer currentUser = SpringSecurityUtil.getCurrentUserId();
@@ -63,6 +65,18 @@ public class MatchService {
         MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match not found!"));
         entity.setMatchStartedDate(createdDTO.getMatchStartedDate());
         entity.setMatchStartedTime(createdDTO.getMatchStartedTime());
+        String homeTeamLogoOld = null;
+        if (!createdDTO.getMatchLogoCreatedDTO().getMatchLogoCreatedId().equals(entity.getHomeTeamLogoId())) {
+            homeTeamLogoOld = entity.getHomeTeamLogoId();
+        }
+        entity.setHomeTeamLogoId(createdDTO.getMatchLogoCreatedDTO().getMatchLogoCreatedId());
+
+        String visitorTeamLogoOld = null;
+        if (!createdDTO.getMatchLogoCreatedDTO().getMatchLogoCreatedId().equals(entity.getVisitorLogoId())) {
+            visitorTeamLogoOld = entity.getVisitorLogoId();
+        }
+        entity.setVisitorLogoId(createdDTO.getMatchLogoCreatedDTO().getMatchLogoCreatedId());
+
         List<ClubsMatchInfoEntity> updatedList = createdDTO.getClubsMatchInfoCreatedDTO().stream().map(
                 info -> {
                     ClubsMatchInfoEntity club = new ClubsMatchInfoEntity();
@@ -75,6 +89,14 @@ public class MatchService {
                 }).collect(Collectors.toList());
         entity.setClubsMatchInfoList(updatedList);
         matchRepository.save(entity);
+
+        if (homeTeamLogoOld != null) {
+            matchLogoService.updateHomeTeamLogo(homeTeamLogoOld);
+        }
+
+        if (visitorTeamLogoOld != null) {
+            matchLogoService.updateVisitorTeamLogo(visitorTeamLogoOld);
+        }
         return toDTO(entity);
     }
 
@@ -86,10 +108,10 @@ public class MatchService {
     public ClubsMatchInfoEntity toClubsMatchInfoEntity(ClubsMatchInfoCreatedDTO createdDTO, MatchEntity entity) {
         ClubsMatchInfoEntity clubsEntity = new ClubsMatchInfoEntity();
         clubsEntity.setHomeTeamName(createdDTO.getHomeTeamName());
-        clubsEntity.setHomeTeamLogo(createdDTO.getHomeTeamLogo());
+        clubsEntity.setHomeLogoId(createdDTO.getHomeTeamLogo().getMatchLogoCreatedId()); // set home team logo
         clubsEntity.setHomeTeamGoalNumber(createdDTO.getHomeTeamGoalNumber());
         clubsEntity.setVisitorTeamGoalNumber(createdDTO.getVisitorTeamGoalNumber());
-        clubsEntity.setVisitorTeamLogo(createdDTO.getVisitorTeamLogo());
+        clubsEntity.setVisitorLogoId(createdDTO.getVisitorTeamLogo().getMatchLogoCreatedId());  // set visitor team logo
         clubsEntity.setVisitorTeamName(createdDTO.getVisitorTeamName());
         clubsEntity.setMatchEntity(entity);// Parent link
         clubsMatchInfoRepository.save(clubsEntity);
@@ -106,10 +128,10 @@ public class MatchService {
                     ClubsMatchInfoDTO clubsMatchInfoDTO = new ClubsMatchInfoDTO();
                     clubsMatchInfoDTO.setClubsMatchInfoId(infoDto.getClubsMatchInfoId());
                     clubsMatchInfoDTO.setHomeTeamName(infoDto.getHomeTeamName());
-                    clubsMatchInfoDTO.setHomeTeamLogo(infoDto.getHomeTeamLogo());
+                    clubsMatchInfoDTO.setHomeTeamLogo(matchLogoService.matchDTO(infoDto.getHomeLogoId()));
                     clubsMatchInfoDTO.setHomeTeamGoalNumber(infoDto.getHomeTeamGoalNumber());
                     clubsMatchInfoDTO.setVisitorTeamGoalNumber(infoDto.getVisitorTeamGoalNumber());
-                    clubsMatchInfoDTO.setVisitorTeamLogo(infoDto.getVisitorTeamLogo());
+                    clubsMatchInfoDTO.setVisitorTeamLogo(matchLogoService.matchDTO(infoDto.getVisitorLogoId()));
                     clubsMatchInfoDTO.setVisitorTeamName(infoDto.getVisitorTeamName());
                     return clubsMatchInfoDTO;
                 }

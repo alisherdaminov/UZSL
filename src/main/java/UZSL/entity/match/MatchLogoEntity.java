@@ -31,4 +31,8 @@ public class MatchLogoEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "match_table_id")
+    private MatchEntity matchEntity;
+
 }

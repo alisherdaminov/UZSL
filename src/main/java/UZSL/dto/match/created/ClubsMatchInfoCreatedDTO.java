@@ -1,5 +1,6 @@
 package UZSL.dto.match.created;
 
+import UZSL.dto.match.image.MatchLogoCreatedDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,9 +9,9 @@ import lombok.Setter;
 public class ClubsMatchInfoCreatedDTO {
 
     private String homeTeamName;
-    private String homeTeamLogo;
     private String homeTeamGoalNumber;
     private String visitorTeamGoalNumber;
-    private String visitorTeamLogo;
     private String visitorTeamName;
+    private MatchLogoCreatedDTO homeTeamLogo;
+    private MatchLogoCreatedDTO visitorTeamLogo;
 }

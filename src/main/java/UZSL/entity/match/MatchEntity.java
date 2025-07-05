@@ -33,4 +33,15 @@ public class MatchEntity {
     @OneToMany(mappedBy = "matchEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClubsMatchInfoEntity> clubsMatchInfoList;
 
+    // matchEntity linked into MatchLogoEntity
+    @Column(name = "match_home_logo_id")
+    private String homeTeamLogoId;
+
+    @Column(name = "match_visitor_logo_id")
+    private String visitorLogoId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "matches_logo_id", insertable = false, updatable = false)
+    private MatchLogoEntity matchLogoEntity;
+
 }

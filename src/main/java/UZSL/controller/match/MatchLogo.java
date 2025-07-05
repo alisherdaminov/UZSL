@@ -22,16 +22,30 @@ public class MatchLogo {
     private MatchLogoService matchLogoService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/{userId}")
-    public ResponseEntity<AppResponse<MatchLogoDTO>> uploadImage(@RequestParam("file") MultipartFile file,
-                                                                 @PathVariable("userId") Integer userId) {
+    @PostMapping("/home-team/{userId}")
+    public ResponseEntity<AppResponse<MatchLogoDTO>> uploadHomeTeamLogo(@RequestParam("file") MultipartFile file,
+                                                                        @PathVariable("userId") Integer userId) {
+        return ResponseEntity.ok().body(new AppResponse<>(matchLogoService.uploadLogo(file, userId),
+                "success", new Date()));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/visitor-team/{userId}")
+    public ResponseEntity<AppResponse<MatchLogoDTO>> uploadVisitorTeamLogo(@RequestParam("file") MultipartFile file,
+                                                                           @PathVariable("userId") Integer userId) {
         return ResponseEntity.ok().body(new AppResponse<>(matchLogoService.uploadLogo(file, userId),
                 "success", new Date()));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{matchId}")
-    public ResponseEntity<Resource> downloadImage(@PathVariable("matchId") String matchId) {
+    public ResponseEntity<Resource> downloadLogo(@PathVariable("matchId") String matchId) {
         return matchLogoService.downloadLogo(matchId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{matchId}")
+    public AppResponse<String> deleteLogo(@PathVariable("matchId") String matchId) {
+        return matchLogoService.deleteLogo(matchId);
     }
 }
