@@ -2,6 +2,7 @@ package UZSL.entity.auth;
 
 import UZSL.entity.home.HomeNewsEntity;
 import UZSL.entity.match.MatchLogoEntity;
+import UZSL.entity.table.ClubsTableEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +34,7 @@ public class UserEntity {
 
     // uz_sl_post
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private List<HomeNewsEntity> uzSLPostEntities;
+    private List<HomeNewsEntity> homeNewsEntityList;
 
     //refresh
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -42,4 +43,8 @@ public class UserEntity {
     // matches club logo
     @OneToOne(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private MatchLogoEntity logoEntityList;
+
+    // clubs table connection
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    private List<ClubsTableEntity> clubsTableEntityList;
 }

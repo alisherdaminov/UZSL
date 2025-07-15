@@ -1,4 +1,4 @@
-package UZSL.dto.match.image;
+package UZSL.dto.match.teams_logo;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MatchLogoCreatedDTO {
+public class TeamsLogoCreatedDTO {
     @NotBlank(message = "Id is required")
-    private String matchLogoCreatedId;
+    private String teamsLogoCreatedId;
 }

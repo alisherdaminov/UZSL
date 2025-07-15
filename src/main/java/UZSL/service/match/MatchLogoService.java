@@ -2,7 +2,7 @@ package UZSL.service.match;
 
 import UZSL.config.util.SpringSecurityUtil;
 import UZSL.dto.app.AppResponse;
-import UZSL.dto.match.image.MatchLogoDTO;
+import UZSL.dto.match.teams_logo.TeamsLogoDTO;
 import UZSL.entity.auth.UserEntity;
 import UZSL.entity.match.MatchEntity;
 import UZSL.entity.match.MatchLogoEntity;
@@ -40,7 +40,7 @@ public class MatchLogoService {
     @Value("${attach.upload.url}")
     private String url;
 
-    public MatchLogoDTO uploadLogo(MultipartFile file, Integer userId) {
+    public TeamsLogoDTO uploadLogo(MultipartFile file, Integer userId) {
         if (!SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && !userId.equals(SpringSecurityUtil.getCurrentUserId())) {
             throw new AppBadException("You are not allowed to upload images.");
         }
@@ -95,7 +95,7 @@ public class MatchLogoService {
     }
 
     public boolean updateHomeTeamLogo(String matchId) {
-        MatchLogoEntity matchLogoEntity = matchLogoRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match id: " + matchId + " is not found!"));
+        MatchLogoEntity matchLogoEntity = matchLogoRepository.findById(matchId).orElseThrow(() -> new AppBadException("Home team id: " + matchId + " is not found!"));
         UserEntity userEntity = userRepository.findById(SpringSecurityUtil.getCurrentUserId()).orElseThrow(() -> new AppBadException("User not found!"));
         matchLogoRepository.updateHomeTeamLogo(userEntity.getUserId(), matchLogoEntity.getMatchLogoId());
         File file = new File(folderName + "/" + matchLogoEntity.getPath() + "/" + matchLogoEntity.getMatchLogoId());
@@ -106,10 +106,10 @@ public class MatchLogoService {
         return isExisted;
     }
 
-    public boolean updateVisitorTeamLogo(String matchId) {
-        MatchLogoEntity matchLogoEntity = matchLogoRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match id: " + matchId + " is not found!"));
+    public boolean updateAwayTeamLogo(String matchId) {
+        MatchLogoEntity matchLogoEntity = matchLogoRepository.findById(matchId).orElseThrow(() -> new AppBadException("Away team id: " + matchId + " is not found!"));
         UserEntity userEntity = userRepository.findById(SpringSecurityUtil.getCurrentUserId()).orElseThrow(() -> new AppBadException("User not found!"));
-        matchLogoRepository.updateVisitorTeamLogo(userEntity.getUserId(), matchLogoEntity.getMatchLogoId());
+        matchLogoRepository.updateAwayTeamLogo(userEntity.getUserId(), matchLogoEntity.getMatchLogoId());
         File file = new File(folderName + "/" + matchLogoEntity.getPath() + "/" + matchLogoEntity.getMatchLogoId());
         boolean isExisted = false;
         if (file.exists()) {
@@ -129,9 +129,9 @@ public class MatchLogoService {
         return (dotIndex > 0) ? filename.substring(0, dotIndex) : filename;
     }
 
-    private MatchLogoDTO toDTO(MatchLogoEntity entity) {
-        MatchLogoDTO dto = new MatchLogoDTO();
-        dto.setMatchLogoId(entity.getMatchLogoId());
+    private TeamsLogoDTO toDTO(MatchLogoEntity entity) {
+        TeamsLogoDTO dto = new TeamsLogoDTO();
+        dto.setTeamsLogoId(entity.getMatchLogoId());
         dto.setOrigenName(entity.getOrigenName());
         dto.setExtension(entity.getExtension());
         dto.setSize(entity.getSize());
@@ -140,10 +140,10 @@ public class MatchLogoService {
         return dto;
     }
 
-    public MatchLogoDTO matchDTO(String matchId) {
+    public TeamsLogoDTO teamsLogoDTO(String matchId) {
         if (matchId == null) return null;
-        MatchLogoDTO dto = new MatchLogoDTO();
-        dto.setMatchLogoId(matchId);
+        TeamsLogoDTO dto = new TeamsLogoDTO();
+        dto.setTeamsLogoId(matchId);
         dto.setUrl(url + "/download/" + matchId);
         return dto;
     }

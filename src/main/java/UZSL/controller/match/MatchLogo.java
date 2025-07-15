@@ -1,7 +1,7 @@
 package UZSL.controller.match;
 
 import UZSL.dto.app.AppResponse;
-import UZSL.dto.match.image.MatchLogoDTO;
+import UZSL.dto.match.teams_logo.TeamsLogoDTO;
 import UZSL.service.match.MatchLogoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/v1/match-logo")
+@RequestMapping("/api/v1/logo")
 @Tag(name = "Match logo", description = "Admin can have a permission to create, get, update, delete UZSL's match logo!")
 public class MatchLogo {
 
@@ -23,15 +23,15 @@ public class MatchLogo {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/home-team/{userId}")
-    public ResponseEntity<AppResponse<MatchLogoDTO>> uploadHomeTeamLogo(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<AppResponse<TeamsLogoDTO>> uploadHomeTeamLogo(@RequestParam("file") MultipartFile file,
                                                                         @PathVariable("userId") Integer userId) {
         return ResponseEntity.ok().body(new AppResponse<>(matchLogoService.uploadLogo(file, userId),
                 "success", new Date()));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/visitor-team/{userId}")
-    public ResponseEntity<AppResponse<MatchLogoDTO>> uploadVisitorTeamLogo(@RequestParam("file") MultipartFile file,
+    @PostMapping("/away-team/{userId}")
+    public ResponseEntity<AppResponse<TeamsLogoDTO>> uploadVisitorTeamLogo(@RequestParam("file") MultipartFile file,
                                                                            @PathVariable("userId") Integer userId) {
         return ResponseEntity.ok().body(new AppResponse<>(matchLogoService.uploadLogo(file, userId),
                 "success", new Date()));

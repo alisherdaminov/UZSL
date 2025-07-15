@@ -32,7 +32,7 @@ public class MatchLogoEntity {
     private UserEntity userEntity;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "match_table_id")
-    private MatchEntity matchEntity;
+    @JoinColumn(name = "teams_table_id")
+    private TeamsEntity teamsEntity;
 
 }

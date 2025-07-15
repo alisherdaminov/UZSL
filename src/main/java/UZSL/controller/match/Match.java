@@ -2,6 +2,7 @@ package UZSL.controller.match;
 
 import UZSL.dto.app.AppResponse;
 import UZSL.dto.match.MatchDTO;
+import UZSL.dto.match.TeamsDTO;
 import UZSL.dto.match.created.MatchCreatedDTO;
 import UZSL.service.match.MatchService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/matches")
-@Tag(name = "Matches", description = "Admin can have a permission to create, get, update, delete UZSL's matches with date and time!")
+@Tag(name = "Matches", description = "UZSL's club's match with date and time can be shown for users! By Admin who can perform all!")
 public class Match {
 
     @Autowired
@@ -33,6 +34,12 @@ public class Match {
         return ResponseEntity.ok().body(new AppResponse<>(matchService.getByIdMatchesData(matchId), "success", new Date()));
     }
 
+    @GetMapping("/{teamsId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<AppResponse<TeamsDTO>> getByIdTeamsData(@PathVariable("teamsId") String teamsId) {
+        return ResponseEntity.ok().body(new AppResponse<>(matchService.getByIdTeamsData(teamsId), "success", new Date()));
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AppResponse<List<MatchDTO>>> getByIdMatchesData() {
@@ -42,13 +49,19 @@ public class Match {
     @PutMapping("/{matchId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AppResponse<MatchDTO>> updateMatch(@PathVariable("matchId") String matchId, @RequestBody MatchCreatedDTO createdDTO) {
-        return ResponseEntity.ok().body(new AppResponse<>(matchService.updateMatch(matchId, createdDTO), "success", new Date()));
+        return ResponseEntity.ok().body(new AppResponse<>(matchService.updatedMatch(matchId, createdDTO), "success", new Date()));
     }
 
     @DeleteMapping("/{matchId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AppResponse<String>> deleteMatchById(@PathVariable("matchId") String matchId) {
         return ResponseEntity.ok().body(new AppResponse<>(matchService.deleteMatchById(matchId), "success", new Date()));
+    }
+
+    @DeleteMapping("/{teamsId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<AppResponse<String>> deleteTeamsById(@PathVariable("teamsId") String teamsId) {
+        return ResponseEntity.ok().body(new AppResponse<>(matchService.deleteTeamsById(teamsId), "success", new Date()));
     }
 
 

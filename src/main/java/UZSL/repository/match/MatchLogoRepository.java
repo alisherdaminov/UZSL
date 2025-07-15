@@ -13,14 +13,13 @@ public interface MatchLogoRepository extends JpaRepository<MatchLogoEntity, Stri
 
     @Transactional
     @Modifying
-    @Query("UPDATE MatchLogoEntity SET  matchEntity.homeTeamLogoId =?2 WHERE userEntity.userId =?1")
-    void updateHomeTeamLogo(Integer userId, String homeTeamLogoId);
+    @Query("UPDATE MatchLogoEntity SET  teamsEntity.homeTeamEntity.homeTeamId =?2 WHERE userEntity.userId =?1")
+    void updateHomeTeamLogo(Integer userId, String homeTeamId);
 
     @Transactional
     @Modifying
-    @Query("UPDATE MatchLogoEntity SET  matchEntity.visitorLogoId =?2 WHERE userEntity.userId =?1")
-    void updateVisitorTeamLogo(Integer userId, String homeTeamLogoId);
-
+    @Query("UPDATE MatchLogoEntity SET  teamsEntity.awayTeamEntity.awayTeamId =?2 WHERE userEntity.userId =?1")
+    void updateAwayTeamLogo(Integer userId, String awayTeamId);
 
     @Transactional
     @Modifying

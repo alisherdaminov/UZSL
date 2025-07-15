@@ -20,6 +20,18 @@ public class MatchEntity {
     private String matchStartedDate;
     @Column(name = "match_started_time")
     private String matchStartedTime;
+    @Column(name = "champions_league")
+    private String championsLeague;
+    @Column(name = "afc_cup")
+    private String afcCup;
+    @Column(name = "conference_league")
+    private String conferenceLeague;
+    @Column(name = "play_off")
+    private String playOff;
+    @Column(name = "relegation")
+    private String relegation;
+    @Column(name = "isProcessed")
+    private boolean isProcessed;
 
     // uz_sl_admin
     @Column(name = "user_id")
@@ -29,19 +41,9 @@ public class MatchEntity {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity userEntity;
 
-    // ClubsMatchInfoEntity is linked to MatchEntity in list
-    @OneToMany(mappedBy = "matchEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ClubsMatchInfoEntity> clubsMatchInfoList;
+    //Teams list linked
+    @OneToMany(mappedBy = "teamsMatchEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamsEntity> teamsEntityList;
 
-    // matchEntity linked into MatchLogoEntity
-    @Column(name = "match_home_logo_id")
-    private String homeTeamLogoId;
-
-    @Column(name = "match_visitor_logo_id")
-    private String visitorLogoId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "matches_logo_id", insertable = false, updatable = false)
-    private MatchLogoEntity matchLogoEntity;
 
 }
