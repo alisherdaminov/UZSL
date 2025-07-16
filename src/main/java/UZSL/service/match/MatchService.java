@@ -21,8 +21,7 @@ import UZSL.service.table.ClubsTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,37 +46,43 @@ public class MatchService {
         if (!SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && !userId.equals(currentUser)) {
             throw new AppBadException("You are not allowed to make the matches!");
         }
-        List<TeamsEntity> teamsRepositoryAll = teamsRepository.findAll();
-        for (TeamsEntity teams : teamsRepositoryAll) {
-            int clubsNumber = matchRepository.countMatchesByClubsMatchInfoId(teams.getTeamsId());
-            if (clubsNumber <= 10) {
-                if (SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && userId.equals(currentUser)) {
-                    MatchEntity entity = new MatchEntity();
-                    entity.setMatchStartedDate(matchCreatedDTO.getMatchStartedDate());
-                    entity.setMatchStartedTime(matchCreatedDTO.getMatchStartedTime());
-                    entity.setUserId(currentUser);
-                    entity.setChampionsLeague(matchCreatedDTO.getChampionsLeague());
-                    entity.setAfcCup(matchCreatedDTO.getAfcCup());
-                    entity.setConferenceLeague(matchCreatedDTO.getConferenceLeague());
-                    entity.setPlayOff(matchCreatedDTO.getPlayOff());
-                    entity.setRelegation(matchCreatedDTO.getRelegation());
-                    entity.setProcessed(true);
-                    MatchEntity savedMatches = matchRepository.save(entity);
-                    // teams data is in list
-                    List<TeamsEntity> teamsEntityList = new ArrayList<>();
-                    if (matchCreatedDTO.getTeamsCreatedList() != null) {
-                        teamsEntityList = matchCreatedDTO.getTeamsCreatedList().stream().map(
-                                teamsInfo -> toTeamsEntity(teamsInfo, savedMatches)).collect(Collectors.toList());
-                    }
-                    entity.setTeamsEntityList(teamsEntityList);
-                    return toMatchesDTO(entity);
+        //Check home or away name isPresent
+        if (matchCreatedDTO.getTeamsCreatedList() != null) {
+            for (TeamsCreatedDTO dto : matchCreatedDTO.getTeamsCreatedList()) {
+                String home = dto.getHomeTeam().getHomeTeamName();
+                String away = dto.getAwayTeam().getAwayTeamName();
+                Optional<TeamsEntity> optionalTeams = teamsRepository.findByHomeAndAwayTeamNamesIgnoreCase(home, away);
+                if (optionalTeams.isPresent()) {
+                    throw new AppBadException("This club: " + home + " or " + away + " already exists!");
                 }
-            } else {
-                throw new AppBadException("Club\'s number must be 20!");
             }
         }
-        throw new AppBadException("Unauthorized attempt to create post");
+
+        // creation MatchEntity
+        MatchEntity entity = new MatchEntity();
+        entity.setMatchStartedDate(matchCreatedDTO.getMatchStartedDate());
+        entity.setMatchStartedTime(matchCreatedDTO.getMatchStartedTime());
+        entity.setUserId(currentUser);
+        entity.setChampionsLeague(matchCreatedDTO.getChampionsLeague());
+        entity.setAfcCup(matchCreatedDTO.getAfcCup());
+        entity.setConferenceLeague(matchCreatedDTO.getConferenceLeague());
+        entity.setPlayOff(matchCreatedDTO.getPlayOff());
+        entity.setRelegation(matchCreatedDTO.getRelegation());
+        entity.setProcessed(true);
+        MatchEntity savedMatch = matchRepository.save(entity);
+
+        // TeamsEntity into MatchEntity
+        List<TeamsEntity> teamsEntityList = new ArrayList<>();
+        if (matchCreatedDTO.getTeamsCreatedList() != null) {
+            teamsEntityList = matchCreatedDTO.getTeamsCreatedList().stream()
+                    .map(dto -> toTeamsEntity(dto, savedMatch))
+                    .collect(Collectors.toList());
+        }
+        entity.setTeamsEntityList(teamsEntityList);
+        //  return to  DTO
+        return toMatchesDTO(entity);
     }
+
 
     /// GET BY ID MATCHES
     public MatchDTO getByIdMatchesData(String matchId) {
@@ -168,29 +173,31 @@ public class MatchService {
 
     // TO HOME TEAM ENTITY
     public TeamsEntity toTeamsEntity(TeamsCreatedDTO createdDTO, MatchEntity entity) {
-        // home team set
+        // Create new home team
         HomeTeamEntity homeTeam = new HomeTeamEntity();
         homeTeam.setHomeTeamName(createdDTO.getHomeTeam().getHomeTeamName());
         homeTeam.setOwnGoal(createdDTO.getHomeTeam().getOwnGoal());
         homeTeam.setPlayedGames(createdDTO.getHomeTeam().getPlayedGames());
-        homeTeam.setHomeTeamLogoId(createdDTO.getHomeTeam().getHomeLogoDTO().getTeamsLogoCreatedId()); // set home team logo
+        homeTeam.setHomeTeamLogoId(createdDTO.getHomeTeam().getHomeLogoDTO().getTeamsLogoCreatedId());
         HomeTeamEntity savedHomeTeam = homeTeamRepository.save(homeTeam);
-        /////////////////////////////////////////////////////
-        // away team set
+
+        // Create new away team
         AwayTeamEntity awayTeam = new AwayTeamEntity();
         awayTeam.setAwayTeamName(createdDTO.getAwayTeam().getAwayTeamName());
         awayTeam.setAwayGoal(createdDTO.getAwayTeam().getAwayGoal());
         awayTeam.setPlayedGames(createdDTO.getAwayTeam().getPlayedGames());
-        awayTeam.setAwayTeamLogoId(createdDTO.getAwayTeam().getAwayTeamsLogoDTO().getTeamsLogoCreatedId()); // set away team logo
+        awayTeam.setAwayTeamLogoId(createdDTO.getAwayTeam().getAwayTeamsLogoDTO().getTeamsLogoCreatedId());
         AwayTeamEntity savedAwayTeam = awayTeamRepository.save(awayTeam);
-        /////////////////////////////////////////////////////
-        // joined in teams entity
+
+        // Create and return teams entity
         TeamsEntity teamsEntity = new TeamsEntity();
         teamsEntity.setHomeTeamEntity(savedHomeTeam);
         teamsEntity.setAwayTeamEntity(savedAwayTeam);
-        teamsEntity.setTeamsMatchEntity(entity);// Parent link
+        teamsEntity.setTeamsMatchEntity(entity);
+
         return teamsEntity;
     }
+
 
     // TO DTO
     public MatchDTO toMatchesDTO(MatchEntity entity) {
