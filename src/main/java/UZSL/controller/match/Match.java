@@ -4,6 +4,8 @@ import UZSL.dto.app.AppResponse;
 import UZSL.dto.match.MatchDTO;
 import UZSL.dto.match.TeamsDTO;
 import UZSL.dto.match.created.MatchCreatedDTO;
+import UZSL.dto.match.updateDTO.MatchUpdatedDTO;
+import UZSL.dto.match.updateDTO.created.MatchUpdateCreatedDTO;
 import UZSL.service.match.MatchService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +48,13 @@ public class Match {
         return ResponseEntity.ok().body(new AppResponse<>(matchService.getAllMatchesData(), "success", new Date()));
     }
 
-    @PutMapping("/{matchId}")
+    @PutMapping("/{matchId}/{homeTeamsId}/{awayTeamsId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<AppResponse<MatchDTO>> updateMatch(@PathVariable("matchId") String matchId, @RequestBody MatchCreatedDTO createdDTO) {
-        return ResponseEntity.ok().body(new AppResponse<>(matchService.updatedMatch(matchId, createdDTO), "success", new Date()));
+    public ResponseEntity<AppResponse<MatchUpdatedDTO>> updateMatch(@PathVariable("matchId") String matchId,
+                                                                    @PathVariable("homeTeamsId") String homeTeamsId,
+                                                                    @PathVariable("awayTeamsId") String awayTeamsId,
+                                                                    @RequestBody MatchUpdateCreatedDTO createdDTO) {
+        return ResponseEntity.ok().body(new AppResponse<>(matchService.updatedMatch(matchId, homeTeamsId, awayTeamsId, createdDTO), "success", new Date()));
     }
 
     @DeleteMapping("/{matchId}")

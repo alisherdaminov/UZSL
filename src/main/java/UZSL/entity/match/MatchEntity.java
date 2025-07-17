@@ -42,7 +42,7 @@ public class MatchEntity {
     private UserEntity userEntity;
 
     //Teams list linked
-    @OneToMany(mappedBy = "teamsMatchEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "teamsMatchEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TeamsEntity> teamsEntityList;
 
 

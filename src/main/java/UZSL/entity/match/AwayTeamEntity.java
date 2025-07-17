@@ -12,7 +12,7 @@ public class AwayTeamEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String awayTeamId;
-    @Column(name = "home_team_name")
+    @Column(name = "away_team_name")
     private String awayTeamName;
     @Column(name = "goals_own")
     private int awayGoal;
@@ -20,9 +20,8 @@ public class AwayTeamEntity {
     private int playedGames;
 
     //linked with TeamsEntity
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "away_teams_id")
-    private TeamsEntity awayTeamsEntity;
+    @OneToOne(mappedBy = "awayTeamEntity", fetch = FetchType.LAZY)
+    private TeamsEntity teamsEntity;
 
     // Away team logo id set
     @Column(name = "away_logo_id")

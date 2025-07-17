@@ -7,6 +7,11 @@ import UZSL.dto.match.MatchDTO;
 import UZSL.dto.match.TeamsDTO;
 import UZSL.dto.match.created.MatchCreatedDTO;
 import UZSL.dto.match.created.TeamsCreatedDTO;
+import UZSL.dto.match.updateDTO.AwayTeamUpdatedDTO;
+import UZSL.dto.match.updateDTO.HomeTeamUpdatedDTO;
+import UZSL.dto.match.updateDTO.MatchUpdatedDTO;
+import UZSL.dto.match.updateDTO.TeamsUpdatedDTO;
+import UZSL.dto.match.updateDTO.created.MatchUpdateCreatedDTO;
 import UZSL.entity.match.AwayTeamEntity;
 import UZSL.entity.match.HomeTeamEntity;
 import UZSL.entity.match.MatchEntity;
@@ -46,18 +51,6 @@ public class MatchService {
         if (!SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && !userId.equals(currentUser)) {
             throw new AppBadException("You are not allowed to make the matches!");
         }
-        //Check home or away name isPresent
-        if (matchCreatedDTO.getTeamsCreatedList() != null) {
-            for (TeamsCreatedDTO dto : matchCreatedDTO.getTeamsCreatedList()) {
-                String home = dto.getHomeTeam().getHomeTeamName();
-                String away = dto.getAwayTeam().getAwayTeamName();
-                Optional<TeamsEntity> optionalTeams = teamsRepository.findByHomeAndAwayTeamNamesIgnoreCase(home, away);
-                if (optionalTeams.isPresent()) {
-                    throw new AppBadException("This club: " + home + " or " + away + " already exists!");
-                }
-            }
-        }
-
         // creation MatchEntity
         MatchEntity entity = new MatchEntity();
         entity.setMatchStartedDate(matchCreatedDTO.getMatchStartedDate());
@@ -75,14 +68,12 @@ public class MatchService {
         List<TeamsEntity> teamsEntityList = new ArrayList<>();
         if (matchCreatedDTO.getTeamsCreatedList() != null) {
             teamsEntityList = matchCreatedDTO.getTeamsCreatedList().stream()
-                    .map(dto -> toTeamsEntity(dto, savedMatch))
-                    .collect(Collectors.toList());
+                    .map(dto -> toTeamsEntity(dto, savedMatch)).collect(Collectors.toList());
         }
         entity.setTeamsEntityList(teamsEntityList);
         //  return to  DTO
         return toMatchesDTO(entity);
     }
-
 
     /// GET BY ID MATCHES
     public MatchDTO getByIdMatchesData(String matchId) {
@@ -103,60 +94,65 @@ public class MatchService {
     }
 
     /// UPDATE
-    public MatchDTO updatedMatch(String matchId, MatchCreatedDTO createdDTO) {
+    public MatchUpdatedDTO updatedMatch(String matchId, String homeTeamsId, String awayTeamsId, MatchUpdateCreatedDTO createdDTO) {
         MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match not found!"));
-        entity.setMatchStartedDate(createdDTO.getMatchStartedDate());
-        entity.setMatchStartedTime(createdDTO.getMatchStartedTime());
-        entity.setChampionsLeague(createdDTO.getChampionsLeague());
-        entity.setAfcCup(createdDTO.getAfcCup());
-        entity.setConferenceLeague(createdDTO.getConferenceLeague());
-        entity.setPlayOff(createdDTO.getPlayOff());
-        entity.setRelegation(createdDTO.getRelegation());
-
-        List<TeamsEntity> updatedList = createdDTO.getTeamsCreatedList().stream().map(
+        List<TeamsEntity> updatedList = createdDTO.getTeamsUpdateCreatedDTOList().stream().map(
                 info -> {
                     // Parent team
                     TeamsEntity club = new TeamsEntity();
-                    /////////////////////////////////////////////////////
-                    //Home team
                     HomeTeamEntity homeTeam = new HomeTeamEntity();
-                    homeTeam.setOwnGoal(info.getHomeTeam().getOwnGoal());
-                    homeTeam.setHomeTeamsEntity(club); // Parent link
-                    String homeTeamLogoOld = null;
-                    if (!info.getHomeTeam().getHomeLogoDTO().getTeamsLogoCreatedId().equals(homeTeam.getHomeTeamLogoId())) {
-                        homeTeamLogoOld = homeTeam.getHomeTeamLogoId();
-                    }
-                    homeTeam.setHomeTeamLogoId(info.getHomeTeam().getHomeLogoDTO().getTeamsLogoCreatedId());
-                    if (homeTeamLogoOld != null) {
-                        matchLogoService.updateHomeTeamLogo(homeTeamLogoOld);
-                    }
-                    /////////////////////////////////////////////////////
-                    //Away team
                     AwayTeamEntity awayTeam = new AwayTeamEntity();
-                    awayTeam.setAwayGoal(info.getAwayTeam().getAwayGoal());
-                    awayTeam.setAwayTeamsEntity(club); // Parent link
-                    String awayTeamLogoOld = null;
-                    if (!info.getAwayTeam().getAwayTeamsLogoDTO().getTeamsLogoCreatedId().equals(awayTeam.getAwayTeamId())) {
-                        awayTeamLogoOld = awayTeam.getAwayTeamId();
-                    }
-                    awayTeam.setAwayTeamLogoId(info.getAwayTeam().getAwayTeamsLogoDTO().getTeamsLogoCreatedId());
-                    if (awayTeamLogoOld != null) {
-                        matchLogoService.updateAwayTeamLogo(awayTeamLogoOld);
-                    }
                     /////////////////////////////////////////////////////
+                    List<TeamsEntity> teamsEntityList = teamsRepository.findAll();
+                    for (TeamsEntity teamsEntity : teamsEntityList) {
+                        //Home team goals will set and once teams logo update
+                        if (homeTeamsId.equals(teamsEntity.getHomeTeamEntity().getHomeTeamId())) {
+                            homeTeam.setOwnGoal(info.getHomeTeamUpdateCreatedDTO().getOwnGoal());
+                            homeTeam.setTeamsEntity(club); // Parent link
+                            // LOGO of home team
+                            String homeTeamLogoOld = null;
+                            if (!info.getHomeTeamUpdateCreatedDTO().getHomeLogoDTO().getTeamsLogoCreatedId().equals(homeTeam.getHomeTeamLogoId())) {
+                                homeTeamLogoOld = homeTeam.getHomeTeamLogoId();
+                            }
+                            homeTeam.setHomeTeamLogoId(info.getHomeTeamUpdateCreatedDTO().getHomeLogoDTO().getTeamsLogoCreatedId());
+                            if (homeTeamLogoOld != null) {
+                                matchLogoService.updateHomeTeamLogo(homeTeamLogoOld);
+                            }
+                        }
+                        /////////////////////////////////////////////////////
+                        //Away team goals will set and once teams logo update
+                        if (awayTeamsId.equals(teamsEntity.getAwayTeamEntity().getAwayTeamId())) {
+                            awayTeam.setAwayGoal(info.getAwayTeamUpdateCreatedDTO().getAwayGoal());
+                            awayTeam.setTeamsEntity(club); // Parent link
+                            // LOGO of away team
+                            String awayTeamLogoOld = null;
+                            if (!info.getAwayTeamUpdateCreatedDTO().getAwayTeamsLogoDTO().getTeamsLogoCreatedId().equals(awayTeam.getAwayTeamId())) {
+                                awayTeamLogoOld = awayTeam.getAwayTeamId();
+                            }
+                            awayTeam.setAwayTeamLogoId(info.getAwayTeamUpdateCreatedDTO().getAwayTeamsLogoDTO().getTeamsLogoCreatedId());
+                            if (awayTeamLogoOld != null) {
+                                matchLogoService.updateAwayTeamLogo(awayTeamLogoOld);
+                            }
+                        }
+                        /// All season's goals will be setting and updating here
+                        teamsRepository.updateTeamGoals(teamsEntity.getTeamsId(), homeTeam.getOwnGoal(), awayTeam.getAwayGoal());
+                        /////////////////////////////////////////////////////
+                        if (entity.isProcessed() && entity.getMatchId() != null
+                                && homeTeamsId.equals(teamsEntity.getHomeTeamEntity().getHomeTeamId())
+                                && awayTeamsId.equals(teamsEntity.getAwayTeamEntity().getAwayTeamId())) {
+                            ///  this method is for calculation of UZSL table in real time
+                            clubsTableService.calculateTeamStatsFromMatches();
+                        }
+                    }
                     // Parent team
+                    club.setTeamsMatchEntity(entity); // Parent link
                     club.setHomeTeamEntity(homeTeam);
                     club.setAwayTeamEntity(awayTeam);
-                    club.setTeamsMatchEntity(entity); // Parent link
                     return club;
                 }).collect(Collectors.toList());
         entity.setTeamsEntityList(updatedList);
         matchRepository.save(entity);
-
-        if (entity.isProcessed()) {
-            clubsTableService.calculateTeamStatsFromMatches();
-        }
-        return toMatchesDTO(entity);
+        return toUpdateDTO(entity);
     }
 
     /// DELETE MATCHES
@@ -172,32 +168,65 @@ public class MatchService {
     }
 
     // TO HOME TEAM ENTITY
-    public TeamsEntity toTeamsEntity(TeamsCreatedDTO createdDTO, MatchEntity entity) {
-        // Create new home team
+    public TeamsEntity toTeamsEntity(TeamsCreatedDTO createdDTO, MatchEntity matchEntity) {
+
+        List<TeamsEntity> optionalTeams = teamsRepository.findAll();
+        for (TeamsEntity teamsEntity : optionalTeams) {
+            String home = teamsEntity.getHomeTeamEntity().getHomeTeamName().toLowerCase().toUpperCase();
+            String away = teamsEntity.getAwayTeamEntity().getAwayTeamName().toLowerCase().toUpperCase();
+            if (home.equals(createdDTO.getHomeTeam().getHomeTeamName()) && away.equals(createdDTO.getAwayTeam().getAwayTeamName())) {
+                throw new AppBadException("This club: " + home + " or " + away + " already exists!");
+            }
+        }
+
+        // new homeTeam
         HomeTeamEntity homeTeam = new HomeTeamEntity();
         homeTeam.setHomeTeamName(createdDTO.getHomeTeam().getHomeTeamName());
-        homeTeam.setOwnGoal(createdDTO.getHomeTeam().getOwnGoal());
-        homeTeam.setPlayedGames(createdDTO.getHomeTeam().getPlayedGames());
         homeTeam.setHomeTeamLogoId(createdDTO.getHomeTeam().getHomeLogoDTO().getTeamsLogoCreatedId());
         HomeTeamEntity savedHomeTeam = homeTeamRepository.save(homeTeam);
 
-        // Create new away team
+        // new awayTeam
         AwayTeamEntity awayTeam = new AwayTeamEntity();
         awayTeam.setAwayTeamName(createdDTO.getAwayTeam().getAwayTeamName());
-        awayTeam.setAwayGoal(createdDTO.getAwayTeam().getAwayGoal());
-        awayTeam.setPlayedGames(createdDTO.getAwayTeam().getPlayedGames());
         awayTeam.setAwayTeamLogoId(createdDTO.getAwayTeam().getAwayTeamsLogoDTO().getTeamsLogoCreatedId());
         AwayTeamEntity savedAwayTeam = awayTeamRepository.save(awayTeam);
 
-        // Create and return teams entity
-        TeamsEntity teamsEntity = new TeamsEntity();
-        teamsEntity.setHomeTeamEntity(savedHomeTeam);
-        teamsEntity.setAwayTeamEntity(savedAwayTeam);
-        teamsEntity.setTeamsMatchEntity(entity);
-
-        return teamsEntity;
+        // new TeamsEntity
+        TeamsEntity newTeams = new TeamsEntity();
+        newTeams.setHomeTeamEntity(savedHomeTeam);
+        newTeams.setAwayTeamEntity(savedAwayTeam);
+        newTeams.setTeamsMatchEntity(matchEntity);
+        return teamsRepository.save(newTeams);
     }
 
+    public MatchUpdatedDTO toUpdateDTO(MatchEntity entity) {
+        MatchUpdatedDTO dto = new MatchUpdatedDTO();
+        dto.setMatchUpdatedId(entity.getMatchId());
+        List<TeamsUpdatedDTO> teamsDTOList = entity.getTeamsEntityList().stream().map(
+                infoDto -> {
+                    // home dto set
+                    HomeTeamUpdatedDTO homeTeamDTO = new HomeTeamUpdatedDTO();
+                    homeTeamDTO.setHomeTeamId(infoDto.getHomeTeamEntity().getHomeTeamId());
+                    homeTeamDTO.setOwnGoal(infoDto.getHomeTeamEntity().getOwnGoal());
+                    homeTeamDTO.setHomeTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getHomeTeamEntity().getHomeTeamLogoId()));
+                    /////////////////////////////////////////////////////
+                    // away dto set
+                    AwayTeamUpdatedDTO awayTeamDTO = new AwayTeamUpdatedDTO();
+                    awayTeamDTO.setAwayTeamId(infoDto.getAwayTeamEntity().getAwayTeamId());
+                    awayTeamDTO.setAwayGoal(infoDto.getAwayTeamEntity().getAwayGoal());
+                    awayTeamDTO.setAwayTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getAwayTeamEntity().getAwayTeamLogoId()));
+                    /////////////////////////////////////////////////////
+                    // set teams dto
+                    TeamsUpdatedDTO teamsDTO = new TeamsUpdatedDTO();
+                    teamsDTO.setTeamsId(infoDto.getTeamsId());
+                    teamsDTO.setHomeTeam(homeTeamDTO);
+                    teamsDTO.setAwayTeam(awayTeamDTO);
+                    return teamsDTO;
+                }
+        ).collect(Collectors.toList());
+        dto.setTeamsUpdatedList(teamsDTOList);
+        return dto;
+    }
 
     // TO DTO
     public MatchDTO toMatchesDTO(MatchEntity entity) {
@@ -217,16 +246,12 @@ public class MatchService {
                     HomeTeamDTO homeTeamDTO = new HomeTeamDTO();
                     homeTeamDTO.setHomeTeamId(infoDto.getHomeTeamEntity().getHomeTeamId());
                     homeTeamDTO.setHomeTeamName(infoDto.getHomeTeamEntity().getHomeTeamName());
-                    homeTeamDTO.setOwnGoal(infoDto.getHomeTeamEntity().getOwnGoal());
-                    homeTeamDTO.setPlayedGames(infoDto.getHomeTeamEntity().getPlayedGames());
                     homeTeamDTO.setHomeTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getHomeTeamEntity().getHomeTeamLogoId()));
                     /////////////////////////////////////////////////////
                     // away dto set
                     AwayTeamDTO awayTeamDTO = new AwayTeamDTO();
                     awayTeamDTO.setAwayTeamId(infoDto.getAwayTeamEntity().getAwayTeamId());
                     awayTeamDTO.setAwayTeamName(infoDto.getAwayTeamEntity().getAwayTeamName());
-                    awayTeamDTO.setAwayGoal(infoDto.getAwayTeamEntity().getAwayGoal());
-                    awayTeamDTO.setPlayedGames(infoDto.getAwayTeamEntity().getPlayedGames());
                     awayTeamDTO.setAwayTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getAwayTeamEntity().getAwayTeamLogoId()));
                     /////////////////////////////////////////////////////
                     // set teams dto
@@ -246,16 +271,12 @@ public class MatchService {
         HomeTeamDTO homeTeamDTO = new HomeTeamDTO();
         homeTeamDTO.setHomeTeamId(entity.getHomeTeamEntity().getHomeTeamId());
         homeTeamDTO.setHomeTeamName(entity.getHomeTeamEntity().getHomeTeamName());
-        homeTeamDTO.setOwnGoal(entity.getHomeTeamEntity().getOwnGoal());
-        homeTeamDTO.setPlayedGames(entity.getHomeTeamEntity().getPlayedGames());
         homeTeamDTO.setHomeTeamsLogo(matchLogoService.teamsLogoDTO(homeTeamDTO.getHomeTeamsLogo().getTeamsLogoId()));
         /////////////////////////////////////////////////////
         // away dto set
         AwayTeamDTO awayTeamDTO = new AwayTeamDTO();
         awayTeamDTO.setAwayTeamId(entity.getAwayTeamEntity().getAwayTeamId());
         awayTeamDTO.setAwayTeamName(entity.getAwayTeamEntity().getAwayTeamName());
-        awayTeamDTO.setAwayGoal(entity.getAwayTeamEntity().getAwayGoal());
-        awayTeamDTO.setPlayedGames(entity.getAwayTeamEntity().getPlayedGames());
         awayTeamDTO.setAwayTeamsLogo(matchLogoService.teamsLogoDTO(awayTeamDTO.getAwayTeamsLogo().getTeamsLogoId()));
         /////////////////////////////////////////////////////
         // set teams dto

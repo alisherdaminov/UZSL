@@ -15,15 +15,14 @@ public class TeamsEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String teamsId;
 
-    //linked with HomeTeamEntity
-    @OneToOne(mappedBy = "homeTeamsEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "home_team_id", referencedColumnName = "homeTeamId")
     private HomeTeamEntity homeTeamEntity;
 
-    //linked with AwayTeamEntity
-    @OneToOne(mappedBy = "awayTeamsEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "away_team_id", referencedColumnName = "awayTeamId")
     private AwayTeamEntity awayTeamEntity;
 
-    // linked with parent MatchEntity
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teams_match")
     private MatchEntity teamsMatchEntity;

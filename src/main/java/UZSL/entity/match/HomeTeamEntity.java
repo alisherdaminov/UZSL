@@ -20,9 +20,9 @@ public class HomeTeamEntity {
     private int playedGames;
 
     //linked with TeamsEntity
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "home_teams_id")
-    private TeamsEntity homeTeamsEntity;
+    @OneToOne(mappedBy = "homeTeamEntity", fetch = FetchType.LAZY)
+    private TeamsEntity teamsEntity;
+
 
     // Home team logo id set
     @Column(name = "home_logo_id")

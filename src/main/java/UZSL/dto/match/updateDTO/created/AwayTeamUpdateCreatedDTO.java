@@ -1,4 +1,4 @@
-package UZSL.dto.match.created;
+package UZSL.dto.match.updateDTO.created;
 
 import UZSL.dto.match.teams_logo.TeamsLogoCreatedDTO;
 import lombok.Getter;
@@ -6,10 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AwayTeamCreatedDTO {
+public class AwayTeamUpdateCreatedDTO {
 
-    private String awayTeamName;
-   // private int awayGoal;
-    //private int playedGames;
+    private int awayGoal;
     private TeamsLogoCreatedDTO awayTeamsLogoDTO;
 }

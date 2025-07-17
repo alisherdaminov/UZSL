@@ -1,7 +1,5 @@
 package UZSL.dto.match.created;
 
-import UZSL.dto.match.AwayTeamDTO;
-import UZSL.dto.match.HomeTeamDTO;
 import lombok.Getter;
 import lombok.Setter;
 
