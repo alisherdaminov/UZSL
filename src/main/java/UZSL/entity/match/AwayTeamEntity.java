@@ -14,7 +14,7 @@ public class AwayTeamEntity {
     private String awayTeamId;
     @Column(name = "away_team_name")
     private String awayTeamName;
-    @Column(name = "goals_own")
+    @Column(name = "away_goal")
     private int awayGoal;
     @Column(name = "played_games")
     private int playedGames;

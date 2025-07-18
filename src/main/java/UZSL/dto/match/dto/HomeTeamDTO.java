@@ -1,4 +1,4 @@
-package UZSL.dto.match;
+package UZSL.dto.match.dto;
 
 import UZSL.dto.match.teams_logo.TeamsLogoDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;

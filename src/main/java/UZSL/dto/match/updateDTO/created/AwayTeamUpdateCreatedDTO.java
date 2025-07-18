@@ -1,6 +1,5 @@
 package UZSL.dto.match.updateDTO.created;
 
-import UZSL.dto.match.teams_logo.TeamsLogoCreatedDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,5 +8,5 @@ import lombok.Setter;
 public class AwayTeamUpdateCreatedDTO {
 
     private int awayGoal;
-    private TeamsLogoCreatedDTO awayTeamsLogoDTO;
+    //private TeamsLogoCreatedDTO awayTeamsLogoDTO;
 }

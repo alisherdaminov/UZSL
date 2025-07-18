@@ -2,7 +2,7 @@ package UZSL.controller.table;
 
 import UZSL.dto.app.AppResponse;
 import UZSL.dto.table.ClubsTableDTO;
-import UZSL.service.table.ClubsTableService;
+import UZSL.service.table.ClubsTableServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ClubsTable {
 
     @Autowired
-    private ClubsTableService clubsTableService;
+    private ClubsTableServiceImpl clubsTableService;
 
     @GetMapping
     public ResponseEntity<AppResponse<List<ClubsTableDTO>>> getFullClubsTable() {

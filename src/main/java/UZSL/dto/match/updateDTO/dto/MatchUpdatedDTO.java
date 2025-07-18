@@ -1,4 +1,4 @@
-package UZSL.dto.match.updateDTO;
+package UZSL.dto.match.updateDTO.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

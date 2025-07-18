@@ -1,4 +1,4 @@
-package UZSL.dto.match.updateDTO;
+package UZSL.dto.match.teams_logo.updated_logo_dto;
 
 import UZSL.dto.match.teams_logo.TeamsLogoDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,9 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class HomeTeamUpdatedDTO {
+public class HomeTeamUpdatedLogoDTO {
 
     private String homeTeamId;
-    private int ownGoal;
-    private TeamsLogoDTO homeTeamsLogo;
+   private TeamsLogoDTO homeTeamsLogo;
 }

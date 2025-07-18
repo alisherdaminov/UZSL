@@ -2,12 +2,11 @@ package UZSL.repository.match;
 
 import UZSL.entity.match.TeamsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,12 +20,11 @@ public interface TeamsRepository extends JpaRepository<TeamsEntity, String> {
     Optional<TeamsEntity> findByHomeAndAwayTeamNamesIgnoreCase(@Param("homeName") String homeName,
                                                                @Param("awayName") String awayName);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE TeamsEntity t SET t.homeTeamEntity.ownGoal = :ownGoal, t.awayTeamEntity.awayGoal = :awayGoal WHERE t.id = :teamsId")
-    void updateTeamGoals(@Param("teamsId") String teamsId,
-                         @Param("ownGoal") int ownGoal,
-                         @Param("awayGoal") int awayGoal);
+    @Query("SELECT t FROM TeamsEntity t LEFT JOIN FETCH t.homeTeamEntity LEFT JOIN FETCH t.awayTeamEntity")
+    List<TeamsEntity> findAllWithTeams();
+
+    Optional<TeamsEntity> findByHomeTeamEntity_HomeTeamIdAndAwayTeamEntity_AwayTeamId(String homeTeamId, String awayTeamId);
+
 
 
 }

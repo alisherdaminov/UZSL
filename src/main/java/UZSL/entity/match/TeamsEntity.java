@@ -27,4 +27,5 @@ public class TeamsEntity {
     @JoinColumn(name = "teams_match")
     private MatchEntity teamsMatchEntity;
 
+
 }

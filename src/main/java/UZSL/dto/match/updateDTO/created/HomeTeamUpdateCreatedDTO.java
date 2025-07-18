@@ -9,5 +9,5 @@ import lombok.Setter;
 public class HomeTeamUpdateCreatedDTO {
 
     private int ownGoal;
-    private TeamsLogoCreatedDTO homeLogoDTO;
+  ///  private TeamsLogoCreatedDTO homeLogoDTO;
 }

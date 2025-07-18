@@ -1,7 +1,5 @@
-package UZSL.dto.match.updateDTO;
+package UZSL.dto.match.updateDTO.dto;
 
-import UZSL.dto.match.AwayTeamDTO;
-import UZSL.dto.match.HomeTeamDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
