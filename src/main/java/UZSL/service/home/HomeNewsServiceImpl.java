@@ -9,6 +9,7 @@ import UZSL.entity.home.HomeNewsEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.exception.AppBadException;
 import UZSL.repository.home.HomeNewsRepository;
+import UZSL.service.home.images.HomeNewsImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

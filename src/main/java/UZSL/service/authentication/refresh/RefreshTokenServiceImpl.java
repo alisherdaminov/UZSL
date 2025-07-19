@@ -1,4 +1,4 @@
-package UZSL.service.auth;
+package UZSL.service.authentication.refresh;
 
 import UZSL.entity.auth.RefreshTokenEntity;
 import UZSL.entity.auth.UserEntity;
@@ -6,24 +6,23 @@ import UZSL.exception.AppBadException;
 import UZSL.repository.auth.RefreshTokenRepository;
 import UZSL.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 import static UZSL.config.util.JwtUtil.generateRefreshToken;
 
 @Service
-public class RefreshTokenService {
+public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
-    // creation of Refresh Token
+    /// CREATE REFRESH TOKEN
+    @Override
     public RefreshTokenEntity createRefreshToken(Integer userId) {
         RefreshTokenEntity entity = new RefreshTokenEntity();
         entity.setUser(userRepository.findById(userId).get());
@@ -33,11 +32,14 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(entity);
     }
 
-    // finding of token
+    ///  GET REFRESH TOKEN BY ID
+    @Override
     public Optional<RefreshTokenEntity> findByToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken);
     }
 
+    /// CHECKING REFRESH TOKEN IS VALID
+    @Override
     public RefreshTokenEntity isValidToken(RefreshTokenEntity entity) {
         if (entity.getExpiryDate().isBefore(Instant.now())) {
             refreshTokenRepository.delete(entity);
@@ -46,8 +48,9 @@ public class RefreshTokenService {
         return entity;
     }
 
-    // deleting of token
-    public void deleterRefreshToken(Integer userId, String refreshToken) {
+    ///  CHECKING REFRESH TOKEN IS NOT VALID, THOUGH IT WILL BE DELETING
+    @Override
+    public void deleteRefreshToken(Integer userId, String refreshToken) {
         Optional<UserEntity> optional = userRepository.findById(userId);
         if (optional.isEmpty()) {
             throw new AppBadException("User id: " + userId + "is not found!");
@@ -55,4 +58,5 @@ public class RefreshTokenService {
         UserEntity user = optional.get();
         refreshTokenRepository.deleteByUserIdAndToken(user.getUserId(), refreshToken);
     }
+
 }

@@ -1,5 +1,7 @@
 package UZSL.dto.table;
 
+import UZSL.dto.table.away_club.ClubsTableAwayDTO;
+import UZSL.dto.table.home_club.ClubsTableHomeDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,14 +12,8 @@ import lombok.Setter;
 public class ClubsTableDTO {
 
     private String clubsTableId;
-    private String homeClubName;
-    private String visitorClubName;
-    private int playedGames;
-    private int won;
-    private int drawn;
-    private int lost;
-    private int totalPoints;
-    private int goalsOwn;
-    private int goalsAgainst;
+    private ClubsTableHomeDTO clubsTableHome;
+    private ClubsTableAwayDTO clubsTableAway;
+
 
 }

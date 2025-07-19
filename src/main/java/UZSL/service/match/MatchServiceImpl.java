@@ -19,6 +19,7 @@ import UZSL.repository.match.AwayTeamRepository;
 import UZSL.repository.match.HomeTeamRepository;
 import UZSL.repository.match.MatchRepository;
 import UZSL.repository.match.TeamsRepository;
+import UZSL.service.match.logo.MatchLogoService;
 import UZSL.service.table.ClubsTableServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -169,9 +170,11 @@ public class MatchServiceImpl implements MatchService {
                     return club;
                 }).collect(Collectors.toList());
         entity.setTeamsEntityList(updatedList);
-        if (entity.isProcessed() && entity.getMatchId() != null) {
+        if (entity.isProcessed()) {
             ///  this method is for calculation of UZSL table in real time, once update function is done!
             clubsTableService.calculateTeamStatsFromMatches(homeTeamsId, awayTeamsId);
+            System.out.println("calculateTeamStatsFromMatches is online in match service");
+
         }
         matchRepository.save(entity);
         return matchServiceDTO.toUpdateDTO(entity);

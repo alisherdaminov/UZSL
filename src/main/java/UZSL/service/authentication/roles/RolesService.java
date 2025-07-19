@@ -1,4 +1,4 @@
-package UZSL.service.auth;
+package UZSL.service.authentication.roles;
 
 import UZSL.entity.auth.RolesEntity;
 import UZSL.enums.UzSlRoles;

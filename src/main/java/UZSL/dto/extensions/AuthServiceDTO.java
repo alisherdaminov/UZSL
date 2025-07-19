@@ -5,17 +5,17 @@ import UZSL.dto.auth.ResponseDTO;
 import UZSL.entity.auth.UserEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.repository.auth.RolesRepository;
-import UZSL.service.auth.RefreshTokenService;
+import UZSL.service.authentication.refresh.RefreshTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthServiceDTO {
     private final RolesRepository rolesRepository;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenServiceImpl refreshTokenService;
 
     @Autowired
-    public AuthServiceDTO(RolesRepository rolesRepository, RefreshTokenService refreshTokenService) {
+    public AuthServiceDTO(RolesRepository rolesRepository, RefreshTokenServiceImpl refreshTokenService) {
         this.rolesRepository = rolesRepository;
         this.refreshTokenService = refreshTokenService;
     }

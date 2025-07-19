@@ -1,4 +1,4 @@
-package UZSL.service.auth;
+package UZSL.service.authentication.auth;
 
 import UZSL.dto.app.AppResponse;
 import UZSL.dto.auth.LoginDTO;
@@ -9,6 +9,8 @@ import UZSL.entity.auth.UserEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.repository.auth.RolesRepository;
 import UZSL.repository.auth.UserRepository;
+import UZSL.service.authentication.refresh.RefreshTokenServiceImpl;
+import UZSL.service.authentication.roles.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private RolesRepository rolesRepository;
     @Autowired
-    private RefreshTokenService refreshTokenService;
+    private RefreshTokenServiceImpl refreshTokenService;
     @Autowired
     private AuthServiceDTO authServiceDTO;
 
@@ -68,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
     /// USER LOG OUT
     @Override
     public AppResponse<String> logout(Integer userId, String refreshToken) {
-        refreshTokenService.deleterRefreshToken(userId, refreshToken);
+        refreshTokenService.deleteRefreshToken(userId, refreshToken);
         return new AppResponse<>();
     }
 

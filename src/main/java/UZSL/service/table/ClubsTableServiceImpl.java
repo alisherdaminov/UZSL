@@ -4,18 +4,21 @@ import UZSL.dto.extensions.ClubsTableServiceDTO;
 import UZSL.dto.table.ClubsTableDTO;
 import UZSL.entity.match.AwayTeamEntity;
 import UZSL.entity.match.HomeTeamEntity;
+import UZSL.entity.table.ClubsTableAwayEntity;
 import UZSL.entity.table.ClubsTableEntity;
+import UZSL.entity.table.ClubsTableHomeEntity;
 import UZSL.exception.AppBadException;
 import UZSL.repository.match.AwayTeamRepository;
 import UZSL.repository.match.HomeTeamRepository;
+import UZSL.repository.table.ClubsTableAwayRepository;
+import UZSL.repository.table.ClubsTableHomeRepository;
 import UZSL.repository.table.ClubsTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,74 +32,89 @@ public class ClubsTableServiceImpl implements ClubsTableService {
     private AwayTeamRepository awayTeamRepository;
     @Autowired
     private ClubsTableServiceDTO clubsTableServiceDTO;
+    @Autowired
+    private ClubsTableAwayRepository clubsTableAwayRepository;
+    @Autowired
+    private ClubsTableHomeRepository clubsTableHomeRepository;
 
     /// CREATE CLUBS TABLE AND CALCULATE WITH SAVING IN ClubsTableRepository DATABASE
     @Override
     public void calculateTeamStatsFromMatches(String homeTeamsId, String awayTeamsId) {
-        // Klub nomi bo‘yicha tez topish uchun map tayyorlash
-        Map<String, ClubsTableEntity> clubMap = new HashMap<>();
-        for (ClubsTableEntity club : clubsTableRepository.findAll()) {
-            if (club.getHomeClubName() != null) {
-                clubMap.put(club.getHomeClubName().trim().toLowerCase(), club);
-            }
-            if (club.getVisitorClubName() != null) {
-                clubMap.put(club.getVisitorClubName().trim().toLowerCase(), club);
-            }
+        HomeTeamEntity homeTeamEntity = homeTeamRepository.findById(homeTeamsId).orElseThrow(() -> new AppBadException("Home team id: " + homeTeamsId + " is not found!"));
+        AwayTeamEntity awayTeamEntity = awayTeamRepository.findById(awayTeamsId).orElseThrow(() -> new AppBadException("Away team id: " + awayTeamsId + " is not found!"));
+
+        String homeName = homeTeamEntity.getHomeTeamName();
+        String awayName = awayTeamEntity.getAwayTeamName();
+
+        // find ClubsTableEntity that already contains this pair (home + away)
+        List<ClubsTableEntity> optionalTable = clubsTableRepository.findAllByHomeClubNameAndVisitorClubName(homeName, awayName);
+        // Clubs Entity is created new obj and getting saved data from HomeTeamEntity
+        ClubsTableHomeEntity clubsTableHome;
+        ClubsTableAwayEntity clubsTableAway;
+        ClubsTableEntity clubsTableEntity;
+
+        if (!optionalTable.isEmpty()) {
+            // Mavjud bo‘lsa, shuni yangilaymiz
+            clubsTableEntity = optionalTable.get(0);
+            clubsTableHome = clubsTableEntity.getClubsTableHomeEntity();
+            clubsTableAway = clubsTableEntity.getClubsTableAwayEntity();
+        } else {
+            // Yangi obyektlar
+            clubsTableHome = new ClubsTableHomeEntity();
+            clubsTableAway = new ClubsTableAwayEntity();
+            clubsTableEntity = new ClubsTableEntity();
+            clubsTableEntity.setCreatedAt(LocalDateTime.now());
         }
 
-        // Home va Away teamlarni olib kelish
-        HomeTeamEntity homeTeamEntity = homeTeamRepository.findById(homeTeamsId)
-                .orElseThrow(() -> new AppBadException("Home team id: " + homeTeamsId + " is not found!"));
-        AwayTeamEntity awayTeamEntity = awayTeamRepository.findById(awayTeamsId)
-                .orElseThrow(() -> new AppBadException("Away team id: " + awayTeamsId + " is not found!"));
-
-        String homeName = homeTeamEntity.getHomeTeamName().trim().toLowerCase();
-        String awayName = awayTeamEntity.getAwayTeamName().trim().toLowerCase();
+        // club name’lar
+        clubsTableHome.setHomeClubName(homeName);
+        clubsTableAway.setAwayClubName(awayName);
 
         int homeGoals = homeTeamEntity.getOwnGoal();
         int awayGoals = awayTeamEntity.getAwayGoal();
 
-        ClubsTableEntity homeTeam = clubMap.get(homeName);
-        ClubsTableEntity awayTeam = clubMap.get(awayName);
+        // Played games
+        clubsTableHome.setPlayedGames(safeAdd(clubsTableHome.getPlayedGames(), 1));
+        clubsTableAway.setPlayedGames(safeAdd(clubsTableAway.getPlayedGames(), 1));
 
-        // Agar ClubsTableEntity topilmasa, hisoblab bo‘lmaydi
-        if (homeTeam == null || awayTeam == null) return;
+        clubsTableHome.setGoalsOwn(safeAdd(clubsTableHome.getGoalsOwn(), homeGoals));
+        clubsTableHome.setGoalsAgainst(safeAdd(clubsTableHome.getGoalsAgainst(), awayGoals));
 
-        // O'yinlar soni oshiriladi
-        homeTeam.setPlayedGames(homeTeam.getPlayedGames() + 1);
-        awayTeam.setPlayedGames(awayTeam.getPlayedGames() + 1);
+        clubsTableAway.setGoalsOwn(safeAdd(clubsTableAway.getGoalsOwn(), awayGoals));
+        clubsTableAway.setGoalsAgainst(safeAdd(clubsTableAway.getGoalsAgainst(), homeGoals));
 
-        // Gollar hisoblanadi
-        homeTeam.setGoalsOwn(homeTeam.getGoalsOwn() + homeGoals);
-        homeTeam.setGoalsAgainst(homeTeam.getGoalsAgainst() + awayGoals);
-
-        awayTeam.setGoalsOwn(awayTeam.getGoalsOwn() + awayGoals);
-        awayTeam.setGoalsAgainst(awayTeam.getGoalsAgainst() + homeGoals);
-
-        // Yutuq/Durrang/Yutqazish holatini aniqlash
         if (homeGoals > awayGoals) {
-            homeTeam.setWon(homeTeam.getWon() + 1);
-            awayTeam.setLost(awayTeam.getLost() + 1);
+            clubsTableHome.setWon(safeAdd(clubsTableHome.getWon(), 1));
+            clubsTableAway.setLost(safeAdd(clubsTableAway.getLost(), 1));
         } else if (awayGoals > homeGoals) {
-            awayTeam.setWon(awayTeam.getWon() + 1);
-            homeTeam.setLost(homeTeam.getLost() + 1);
+            clubsTableAway.setWon(safeAdd(clubsTableAway.getWon(), 1));
+            clubsTableHome.setLost(safeAdd(clubsTableHome.getLost(), 1));
         } else {
-            homeTeam.setDrawn(homeTeam.getDrawn() + 1);
-            awayTeam.setDrawn(awayTeam.getDrawn() + 1);
+            clubsTableHome.setDrawn(safeAdd(clubsTableHome.getDrawn(), 1));
+            clubsTableAway.setDrawn(safeAdd(clubsTableAway.getDrawn(), 1));
         }
+        // Points
+        clubsTableHome.setTotalPoints(clubsTableHome.getWon() * 3 + clubsTableHome.getDrawn());
+        clubsTableAway.setTotalPoints(clubsTableAway.getWon() * 3 + clubsTableAway.getDrawn());
 
-        // Ochkolar yangilanadi
-        homeTeam.setTotalPoints(homeTeam.getWon() * 3 + homeTeam.getDrawn());
-        awayTeam.setTotalPoints(awayTeam.getWon() * 3 + awayTeam.getDrawn());
+        // Save
+        clubsTableHome = clubsTableHomeRepository.save(clubsTableHome);
+        clubsTableAway = clubsTableAwayRepository.save(clubsTableAway);
 
-        // Saqlash
-        clubsTableRepository.saveAll(Arrays.asList(homeTeam, awayTeam));
+        clubsTableEntity.setClubsTableHomeEntity(clubsTableHome);
+        clubsTableEntity.setClubsTableAwayEntity(clubsTableAway);
+        clubsTableRepository.save(clubsTableEntity);
+    }
+
+    /// safeAdd function is for safe additions
+    private int safeAdd(Integer base, int valueToAdd) {
+        return (base == null ? 0 : base) + valueToAdd;
     }
 
     /// GET ALL CLUBS TABLE RESULTS LIST
     @Override
     public List<ClubsTableDTO> getFullClubsTable() {
-        List<ClubsTableEntity> entityList = clubsTableRepository.findAll();
+        List<ClubsTableEntity> entityList = clubsTableRepository.getLeagueTable();
         return entityList.stream().map(clubsTableServiceDTO::toDTO).collect(Collectors.toList());
     }
 

@@ -2,7 +2,7 @@ package UZSL.controller.match;
 
 import UZSL.dto.app.AppResponse;
 import UZSL.dto.match.teams_logo.TeamsLogoDTO;
-import UZSL.service.match.MatchLogoService;
+import UZSL.service.match.logo.MatchLogoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

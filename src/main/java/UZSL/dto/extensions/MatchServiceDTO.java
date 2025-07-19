@@ -21,7 +21,7 @@ import UZSL.exception.AppBadException;
 import UZSL.repository.match.AwayTeamRepository;
 import UZSL.repository.match.HomeTeamRepository;
 import UZSL.repository.match.TeamsRepository;
-import UZSL.service.match.MatchLogoService;
+import UZSL.service.match.logo.MatchLogoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

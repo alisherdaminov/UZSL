@@ -1,4 +1,4 @@
-package UZSL.service.match;
+package UZSL.service.match.logo;
 
 import UZSL.config.util.SpringSecurityUtil;
 import UZSL.dto.app.AppResponse;

@@ -3,7 +3,7 @@ package UZSL.dto.extensions;
 import UZSL.dto.Home.HomeNewsDTO;
 import UZSL.entity.home.HomeNewsEntity;
 import UZSL.repository.home.HomeNewsRepository;
-import UZSL.service.home.HomeNewsImageService;
+import UZSL.service.home.images.HomeNewsImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

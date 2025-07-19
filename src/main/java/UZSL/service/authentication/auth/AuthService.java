@@ -1,4 +1,4 @@
-package UZSL.service.auth;
+package UZSL.service.authentication.auth;
 
 import UZSL.dto.app.AppResponse;
 import UZSL.dto.auth.LoginDTO;

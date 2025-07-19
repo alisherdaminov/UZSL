@@ -1,7 +1,6 @@
-package UZSL.service.home;
+package UZSL.service.home.images;
 
 import UZSL.config.util.SpringSecurityUtil;
-import UZSL.dto.Home.image.HomeImageCreatedDTO;
 import UZSL.dto.Home.image.HomeImageDTO;
 import UZSL.entity.auth.UserEntity;
 import UZSL.entity.home.HomeImageEntity;

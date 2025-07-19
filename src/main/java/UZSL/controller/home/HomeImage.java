@@ -2,7 +2,7 @@ package UZSL.controller.home;
 
 import UZSL.dto.Home.image.HomeImageDTO;
 import UZSL.dto.app.AppResponse;
-import UZSL.service.home.HomeNewsImageService;
+import UZSL.service.home.images.HomeNewsImageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

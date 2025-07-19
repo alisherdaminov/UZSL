@@ -7,8 +7,8 @@ import UZSL.dto.auth.RefreshTokenRequest;
 import UZSL.dto.auth.ResponseDTO;
 import UZSL.dto.auth.UserCreated;
 import UZSL.entity.auth.RefreshTokenEntity;
-import UZSL.service.auth.AuthServiceImpl;
-import UZSL.service.auth.RefreshTokenService;
+import UZSL.service.authentication.auth.AuthServiceImpl;
+import UZSL.service.authentication.refresh.RefreshTokenServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class Auth {
     @Autowired
     private AuthServiceImpl authService;
     @Autowired
-    private RefreshTokenService refreshTokenService;
+    private RefreshTokenServiceImpl refreshTokenService;
 
     @PostMapping("/registration")
     public ResponseEntity<AppResponse<String>> userRegistration(@Valid @RequestBody UserCreated userCreated) {
