@@ -1,7 +1,7 @@
 package UZSL.service.match;
 
 import UZSL.config.util.SpringSecurityUtil;
-import UZSL.dto.extensions.DtoExtensions;
+import UZSL.dto.extensions.MatchServiceDTO;
 import UZSL.dto.match.dto.MatchDTO;
 import UZSL.dto.match.dto.TeamsDTO;
 import UZSL.dto.match.created.MatchCreatedDTO;
@@ -42,10 +42,10 @@ public class MatchServiceImpl implements MatchService {
     @Autowired
     private ClubsTableServiceImpl clubsTableService;
     @Autowired
-    private DtoExtensions dtoExtensions;
+    private MatchServiceDTO matchServiceDTO;
 
 
-    ///  CREATE
+    ///  CREATE MATCH DAYS WITH CLUBS
     @Override
     public MatchDTO createMatch(Integer userId, MatchCreatedDTO matchCreatedDTO) {
         Integer currentUser = SpringSecurityUtil.getCurrentUserId();
@@ -57,11 +57,6 @@ public class MatchServiceImpl implements MatchService {
         entity.setMatchStartedDate(matchCreatedDTO.getMatchStartedDate());
         entity.setMatchStartedTime(matchCreatedDTO.getMatchStartedTime());
         entity.setUserId(currentUser);
-        entity.setChampionsLeague(matchCreatedDTO.getChampionsLeague());
-        entity.setAfcCup(matchCreatedDTO.getAfcCup());
-        entity.setConferenceLeague(matchCreatedDTO.getConferenceLeague());
-        entity.setPlayOff(matchCreatedDTO.getPlayOff());
-        entity.setRelegation(matchCreatedDTO.getRelegation());
         entity.setProcessed(true);
         MatchEntity savedMatch = matchRepository.save(entity);
 
@@ -69,35 +64,35 @@ public class MatchServiceImpl implements MatchService {
         List<TeamsEntity> teamsEntityList = new ArrayList<>();
         if (matchCreatedDTO.getTeamsCreatedList() != null) {
             teamsEntityList = matchCreatedDTO.getTeamsCreatedList().stream()
-                    .map(dto -> dtoExtensions.toTeamsEntity(dto, savedMatch)).collect(Collectors.toList());
+                    .map(dto -> matchServiceDTO.toTeamsEntity(dto, savedMatch)).collect(Collectors.toList());
         }
         entity.setTeamsEntityList(teamsEntityList);
         //  return to  DTO
-        return dtoExtensions.toMatchesDTO(entity);
+        return matchServiceDTO.toMatchesDTO(entity);
     }
 
-    /// GET BY ID Matches
+    /// GET MATCHES DAYS AND CLUB BY ID
     @Override
     public MatchDTO getByIdMatchesData(String matchId) {
         MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match id: " + matchId + " is not found!"));
-        return dtoExtensions.toMatchesDTO(entity);
+        return matchServiceDTO.toMatchesDTO(entity);
     }
 
-    /// GET BY ID TEAMS
+    /// GET TEAMS BY ID
     @Override
     public TeamsDTO getByIdTeamsData(String teamsId) {
         TeamsEntity entity = teamsRepository.findById(teamsId).orElseThrow(() -> new AppBadException("Teams id: " + teamsId + " is not found!"));
-        return dtoExtensions.toTeamsDTO(entity);
+        return matchServiceDTO.toTeamsDTO(entity);
     }
 
-    ///  GET ALL
+    ///  GET ALL MATCH DAYS AND CLUBS LIST
     @Override
     public List<MatchDTO> getAllMatchesData() {
         List<MatchEntity> entityList = matchRepository.findAll();
-        return entityList.stream().map(dtoExtensions::toMatchesDTO).collect(Collectors.toList());
+        return entityList.stream().map(matchServiceDTO::toMatchesDTO).collect(Collectors.toList());
     }
 
-    ///  UPDATE CLUBS LOGO
+    ///  UPDATE CLUBS LOGO BY ID
     @Override
     public MatchUpdatedLogoDTO updateClubLogo(String matchId, String homeTeamsId, String awayTeamsId, MatchUpdateLogoCreatedDTO createdDTO) {
         MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match not found!"));
@@ -135,10 +130,10 @@ public class MatchServiceImpl implements MatchService {
                 }).collect(Collectors.toList());
         entity.setTeamsEntityList(updatedList);
         matchRepository.save(entity);
-        return dtoExtensions.toUpdateClubLogoDTO(entity);
+        return matchServiceDTO.toUpdateClubLogoDTO(entity);
     }
 
-    ///  UPDATE CLUBS GOALS
+    ///  UPDATE CLUBS GOALS AFTER EVERY MATCH ENDS
     @Override
     public MatchUpdatedDTO updatedMatch(String matchId, String homeTeamsId, String awayTeamsId, MatchUpdateCreatedDTO createdDTO) {
         MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match not found!"));
@@ -175,21 +170,21 @@ public class MatchServiceImpl implements MatchService {
                 }).collect(Collectors.toList());
         entity.setTeamsEntityList(updatedList);
         if (entity.isProcessed() && entity.getMatchId() != null) {
-            ///  this method is for calculation of UZSL table in real time
+            ///  this method is for calculation of UZSL table in real time, once update function is done!
             clubsTableService.calculateTeamStatsFromMatches(homeTeamsId, awayTeamsId);
         }
         matchRepository.save(entity);
-        return dtoExtensions.toUpdateDTO(entity);
+        return matchServiceDTO.toUpdateDTO(entity);
     }
 
-    /// DELETE MATCHES
+    /// DELETE MATCHES DAYS AND CLUBS BY ID IN DATABASE
     @Override
     public String deleteMatchById(String matchId) {
         matchRepository.deleteById(matchId);
         return "Deleted match: " + matchId;
     }
 
-    /// DELETE TEAMS
+    /// DELETE TEAMS BY ID IN DATABASE
     @Override
     public String deleteTeamsById(String teamsId) {
         teamsRepository.deleteById(teamsId);

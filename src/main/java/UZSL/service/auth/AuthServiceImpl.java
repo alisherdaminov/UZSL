@@ -1,0 +1,76 @@
+package UZSL.service.auth;
+
+import UZSL.dto.app.AppResponse;
+import UZSL.dto.auth.LoginDTO;
+import UZSL.dto.auth.ResponseDTO;
+import UZSL.dto.auth.UserCreated;
+import UZSL.dto.extensions.AuthServiceDTO;
+import UZSL.entity.auth.UserEntity;
+import UZSL.enums.UzSlRoles;
+import UZSL.repository.auth.RolesRepository;
+import UZSL.repository.auth.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Optional;
+
+@Service
+public class AuthServiceImpl implements AuthService {
+
+    @Autowired
+    private RolesService rolesService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private RolesRepository rolesRepository;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+    @Autowired
+    private AuthServiceDTO authServiceDTO;
+
+    /// USER REGISTRATION
+    @Override
+    public AppResponse<String> userRegistration(UserCreated userCreated) {
+        Optional<UserEntity> optional = userRepository.findByUsername(userCreated.getUsername());
+        if (optional.isPresent()) {
+            return new AppResponse<>("User exists");
+        }
+        UserEntity user = new UserEntity();
+        user.setFullName(userCreated.getFullName());
+        user.setUsername(userCreated.getUsername());
+        user.setPassword(bCryptPasswordEncoder.encode(userCreated.getPassword()));
+        user.setCreatedAt(LocalDateTime.now());
+        userRepository.save(user);
+        rolesService.createRole(user.getUserId(), UzSlRoles.ROLE_USER);
+        return new AppResponse<>("User successfully registered!");
+    }
+
+    /// USER LOG IN
+    @Override
+    public AppResponse<ResponseDTO> login(LoginDTO loginDTO) {
+        Optional<UserEntity> optional = userRepository.findByUsername(loginDTO.getUsername());
+        if (optional.isEmpty()) {
+            return new AppResponse<>("User not found!");
+        }
+        UserEntity user = optional.get();
+        if (!bCryptPasswordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            return new AppResponse<>("Wrong password!");
+        }
+        ResponseDTO responseDTO = authServiceDTO.buildResponseDTO(user);
+        return new AppResponse<>(responseDTO, "success", new Date());
+    }
+
+    /// USER LOG OUT
+    @Override
+    public AppResponse<String> logout(Integer userId, String refreshToken) {
+        refreshTokenService.deleterRefreshToken(userId, refreshToken);
+        return new AppResponse<>();
+    }
+
+
+}

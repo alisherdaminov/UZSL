@@ -7,7 +7,7 @@ import UZSL.dto.auth.RefreshTokenRequest;
 import UZSL.dto.auth.ResponseDTO;
 import UZSL.dto.auth.UserCreated;
 import UZSL.entity.auth.RefreshTokenEntity;
-import UZSL.service.auth.AuthService;
+import UZSL.service.auth.AuthServiceImpl;
 import UZSL.service.auth.RefreshTokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import java.util.Date;
 public class Auth {
 
     @Autowired
-    private AuthService authService;
+    private AuthServiceImpl authService;
     @Autowired
     private RefreshTokenService refreshTokenService;
 

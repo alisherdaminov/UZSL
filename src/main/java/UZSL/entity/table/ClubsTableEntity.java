@@ -1,6 +1,5 @@
 package UZSL.entity.table;
 
-import UZSL.entity.auth.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,13 +36,13 @@ public class ClubsTableEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // uz_sl_admin
-    @Column(name = "user_id")
-    private Integer userId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private UserEntity userEntity;
+//    // uz_sl_admin
+//    @Column(name = "user_id")
+//    private Integer userId;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+//    private UserEntity userEntity;
 
 
 }

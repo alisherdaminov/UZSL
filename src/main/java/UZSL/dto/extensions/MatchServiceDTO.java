@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class DtoExtensions {
+public class MatchServiceDTO {
 
     private final HomeTeamRepository homeTeamRepository;
     private final AwayTeamRepository awayTeamRepository;
@@ -37,10 +37,10 @@ public class DtoExtensions {
     private final MatchLogoService matchLogoService;
 
     @Autowired
-    public DtoExtensions(HomeTeamRepository homeTeamRepository,
-                         AwayTeamRepository awayTeamRepository,
-                         TeamsRepository teamsRepository,
-                         MatchLogoService matchLogoService) {
+    public MatchServiceDTO(HomeTeamRepository homeTeamRepository,
+                           AwayTeamRepository awayTeamRepository,
+                           TeamsRepository teamsRepository,
+                           MatchLogoService matchLogoService) {
         this.homeTeamRepository = homeTeamRepository;
         this.awayTeamRepository = awayTeamRepository;
         this.teamsRepository = teamsRepository;
@@ -143,11 +143,6 @@ public class DtoExtensions {
         dto.setMatchId(entity.getMatchId());
         dto.setMatchStartedDate(entity.getMatchStartedDate());
         dto.setMatchStartedTime(entity.getMatchStartedTime());
-        dto.setChampionsLeague(entity.getChampionsLeague());
-        dto.setAfcCup(entity.getAfcCup());
-        dto.setConferenceLeague(entity.getConferenceLeague());
-        dto.setPlayOff(entity.getPlayOff());
-        dto.setRelegation(entity.getRelegation());
         // teams entity in dto list shown
         List<TeamsDTO> teamsDTOList = entity.getTeamsEntityList().stream().map(
                 infoDto -> {

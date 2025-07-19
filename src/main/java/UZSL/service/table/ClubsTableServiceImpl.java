@@ -1,5 +1,6 @@
 package UZSL.service.table;
 
+import UZSL.dto.extensions.ClubsTableServiceDTO;
 import UZSL.dto.table.ClubsTableDTO;
 import UZSL.entity.match.AwayTeamEntity;
 import UZSL.entity.match.HomeTeamEntity;
@@ -10,7 +11,6 @@ import UZSL.repository.match.HomeTeamRepository;
 import UZSL.repository.table.ClubsTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,7 +27,10 @@ public class ClubsTableServiceImpl implements ClubsTableService {
     private HomeTeamRepository homeTeamRepository;
     @Autowired
     private AwayTeamRepository awayTeamRepository;
+    @Autowired
+    private ClubsTableServiceDTO clubsTableServiceDTO;
 
+    /// CREATE CLUBS TABLE AND CALCULATE WITH SAVING IN ClubsTableRepository DATABASE
     @Override
     public void calculateTeamStatsFromMatches(String homeTeamsId, String awayTeamsId) {
         // Klub nomi bo‘yicha tez topish uchun map tayyorlash
@@ -90,10 +93,11 @@ public class ClubsTableServiceImpl implements ClubsTableService {
         clubsTableRepository.saveAll(Arrays.asList(homeTeam, awayTeam));
     }
 
+    /// GET ALL CLUBS TABLE RESULTS LIST
     @Override
     public List<ClubsTableDTO> getFullClubsTable() {
         List<ClubsTableEntity> entityList = clubsTableRepository.findAll();
-        return entityList.stream().map(ClubsTableDTO::toDTO).collect(Collectors.toList());
+        return entityList.stream().map(clubsTableServiceDTO::toDTO).collect(Collectors.toList());
     }
 
 

@@ -4,7 +4,7 @@ import UZSL.config.util.PageUtil;
 import UZSL.dto.app.AppResponse;
 import UZSL.dto.Home.HomeNewsCreatedDTO;
 import UZSL.dto.Home.HomeNewsDTO;
-import UZSL.service.home.HomeNewsService;
+import UZSL.service.home.HomeNewsServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
@@ -20,7 +20,7 @@ import java.util.Date;
 public class Home {
 
     @Autowired
-    private HomeNewsService homeNewsService;
+    private HomeNewsServiceImpl homeNewsService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/{userId}")

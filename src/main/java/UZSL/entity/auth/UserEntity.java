@@ -44,7 +44,7 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private MatchLogoEntity logoEntityList;
 
-    // clubs table connection
-    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private List<ClubsTableEntity> clubsTableEntityList;
+//    // clubs table connection
+//    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+//    private List<ClubsTableEntity> clubsTableEntityList;
 }

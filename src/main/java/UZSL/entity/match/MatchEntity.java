@@ -20,16 +20,6 @@ public class MatchEntity {
     private String matchStartedDate;
     @Column(name = "match_started_time")
     private String matchStartedTime;
-    @Column(name = "champions_league")
-    private String championsLeague;
-    @Column(name = "afc_cup")
-    private String afcCup;
-    @Column(name = "conference_league")
-    private String conferenceLeague;
-    @Column(name = "play_off")
-    private String playOff;
-    @Column(name = "relegation")
-    private String relegation;
     @Column(name = "isProcessed")
     private boolean isProcessed;
 
