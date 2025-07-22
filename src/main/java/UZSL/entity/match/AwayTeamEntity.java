@@ -16,8 +16,6 @@ public class AwayTeamEntity {
     private String awayTeamName;
     @Column(name = "away_goal")
     private int awayGoal;
-    @Column(name = "played_games")
-    private int playedGames;
 
     //linked with TeamsEntity
     @OneToOne(mappedBy = "awayTeamEntity", fetch = FetchType.LAZY)

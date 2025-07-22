@@ -1,10 +1,10 @@
 package UZSL.dto.extensions;
 
-import UZSL.dto.table.ClubsTableDTO;
-import UZSL.dto.table.away_club.ClubsTableAwayDTO;
-import UZSL.dto.table.home_club.ClubsTableHomeDTO;
-import UZSL.entity.table.ClubsTableEntity;
-import UZSL.repository.table.ClubsTableRepository;
+import UZSL.dto.clubs.match_info.ClubsTableDTO;
+import UZSL.dto.clubs.match_info.away_club.ClubsTableAwayDTO;
+import UZSL.dto.clubs.match_info.home_club.ClubsTableHomeDTO;
+import UZSL.entity.clubs.table.ClubsTableEntity;
+import UZSL.repository.clubs.table.ClubsTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

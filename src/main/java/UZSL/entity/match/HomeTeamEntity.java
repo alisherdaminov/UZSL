@@ -16,13 +16,10 @@ public class HomeTeamEntity {
     private String homeTeamName;
     @Column(name = "own_goal")
     private int ownGoal;
-    @Column(name = "played_games")
-    private int playedGames;
 
     //linked with TeamsEntity
     @OneToOne(mappedBy = "homeTeamEntity", fetch = FetchType.LAZY)
     private TeamsEntity teamsEntity;
-
 
     // Home team logo id set
     @Column(name = "home_logo_id")
