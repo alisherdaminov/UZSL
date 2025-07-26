@@ -1,5 +1,6 @@
 package UZSL.entity.clubs.clubsInfo;
 
+import UZSL.entity.match.HomeTeamEntity;
 import UZSL.entity.match.TeamsEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,6 +37,6 @@ public class ClubsSquadEntity {
     private ClubsProfileEntity clubsProfileEntity;
 
     @OneToOne(mappedBy = "clubsSquadEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private TeamsEntity teamsClubsSquad;
+    private HomeTeamEntity teamsClubsSquad;
 
 }

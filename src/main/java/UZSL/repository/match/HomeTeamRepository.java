@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface HomeTeamRepository extends JpaRepository<HomeTeamEntity, String> {
+
     @Transactional
     @Modifying
     @Query("UPDATE HomeTeamEntity h SET h.ownGoal = :ownGoal WHERE h.homeTeamId = :homeTeamId")

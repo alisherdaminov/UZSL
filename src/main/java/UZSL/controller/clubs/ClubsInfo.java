@@ -18,12 +18,11 @@ public class ClubsInfo {
     @Autowired
     private ClubsInfoServiceImpl clubsInfoService;
 
-    @PostMapping("/{userId}/{clubsId}")
+    @PostMapping("/{clubsId}")
     public ResponseEntity<AppResponse<ClubsSquadDTO>> createSquadAndProfile(
-            @PathVariable("userId") Integer userId,
             @PathVariable("clubsId") String clubsId,
             @RequestBody ClubsSquadCreatedDTO createdDTO) {
-        return ResponseEntity.ok().body(new AppResponse<>(clubsInfoService.createSquadAndProfile(userId, clubsId, createdDTO),
+        return ResponseEntity.ok().body(new AppResponse<>(clubsInfoService.createSquadAndProfile(clubsId, createdDTO),
                 "success", new Date()));
     }
 

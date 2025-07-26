@@ -94,12 +94,14 @@ public class ClubsSquadServiceDTO {
     //ClubsSquadDTO
     public ClubsSquadDTO toClubsSquadDTO(ClubsSquadEntity entity) {
         ClubsSquadDTO clubsSquadDTO = new ClubsSquadDTO();
+        clubsSquadDTO.setClubsSquadId(entity.getClubsSquadId());
         clubsSquadDTO.setClubsFullName(entity.getClubsFullName());
 
         //Goal keepers
         List<GoalKeepersDTO> goalKeepersDTOList = entity.getGoalKeepersEntityList().stream().map(
                 dto -> {
                     GoalKeepersDTO goalKeepersDTO = new GoalKeepersDTO();
+                    goalKeepersDTO.setClubsGoalKeepersId(dto.getClubsGoalKeepersId());
                     goalKeepersDTO.setFirstName(dto.getFirstName());
                     goalKeepersDTO.setLastName(dto.getLastName());
                     goalKeepersDTO.setClubNumber(dto.getClubNumber());
@@ -109,9 +111,10 @@ public class ClubsSquadServiceDTO {
         clubsSquadDTO.setGoalKeepers(goalKeepersDTOList);
 
         //Defenders
-        List<DefendersDTO> defendersDTOList = entity.getGoalKeepersEntityList().stream().map(
+        List<DefendersDTO> defendersDTOList = entity.getDefenderEntityList().stream().map(
                 dto -> {
                     DefendersDTO defendersDTO = new DefendersDTO();
+                    defendersDTO.setClubsDefendersId(dto.getClubsDefendersId());
                     defendersDTO.setFirstName(dto.getFirstName());
                     defendersDTO.setLastName(dto.getLastName());
                     defendersDTO.setClubNumber(dto.getClubNumber());
@@ -121,9 +124,10 @@ public class ClubsSquadServiceDTO {
         clubsSquadDTO.setDefenders(defendersDTOList);
 
         //Midfielders
-        List<MidFieldersDTO> midFieldersDTOList = entity.getGoalKeepersEntityList().stream().map(
+        List<MidFieldersDTO> midFieldersDTOList = entity.getMidFieldersEntityList().stream().map(
                 dto -> {
                     MidFieldersDTO midFieldersDTO = new MidFieldersDTO();
+                    midFieldersDTO.setClubsMidfieldersId(dto.getClubsMidFieldersId());
                     midFieldersDTO.setFirstName(dto.getFirstName());
                     midFieldersDTO.setLastName(dto.getLastName());
                     midFieldersDTO.setClubNumber(dto.getClubNumber());
@@ -133,9 +137,10 @@ public class ClubsSquadServiceDTO {
         clubsSquadDTO.setMidFielders(midFieldersDTOList);
 
         //Strikers
-        List<StrikersDTO> strikersDTOList = entity.getGoalKeepersEntityList().stream().map(
+        List<StrikersDTO> strikersDTOList = entity.getStrikersEntityList().stream().map(
                 dto -> {
                     StrikersDTO strikersDTO = new StrikersDTO();
+                    strikersDTO.setClubsStrikersId(dto.getClubsStrikersId());
                     strikersDTO.setFirstName(dto.getFirstName());
                     strikersDTO.setLastName(dto.getLastName());
                     strikersDTO.setClubNumber(dto.getClubNumber());
@@ -146,6 +151,7 @@ public class ClubsSquadServiceDTO {
 
         // Clubs profile
         ClubsProfileDTO clubsProfileDTO = new ClubsProfileDTO();
+        clubsProfileDTO.setClubsProfileId(entity.getClubsProfileEntity().getClubsProfileId());
         clubsProfileDTO.setStadiumName(entity.getClubsProfileEntity().getStadiumName());
         clubsProfileDTO.setFounded(entity.getClubsProfileEntity().getFounded());
         clubsProfileDTO.setClubsColor(entity.getClubsProfileEntity().getClubsColor());

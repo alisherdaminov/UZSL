@@ -1,5 +1,6 @@
 package UZSL.entity.match;
 
+import UZSL.entity.clubs.clubsInfo.ClubsSquadEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +29,8 @@ public class HomeTeamEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "home_logo_id", insertable = false, updatable = false)
     private MatchLogoEntity matchLogoEntity;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "clubs_squad_id")
+    private ClubsSquadEntity clubsSquadEntity;
 }

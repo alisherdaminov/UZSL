@@ -169,7 +169,6 @@ public class PlayerServiceImpl implements PlayerService {
         playerCareer.setDistanceKmForSeason(playerCreated.getPlayerCareerCreated().getDistanceKmForSeason());
         playerCareer.setPenalties(playerCreated.getPlayerCareerCreated().getPenalties());
 
-
         //calculating which is the same id for selected players id in db
         if (optionalGoalKeepers.isPresent()) {
             playerCareer.setGoalKeepersCareer(optionalGoalKeepers.get());

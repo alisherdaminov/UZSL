@@ -9,7 +9,7 @@ import java.util.List;
 public interface ClubsInfoService {
 
 
-    ClubsSquadDTO createSquadAndProfile(Integer userId, String clubsId, ClubsSquadCreatedDTO squadCreatedDTO);
+    ClubsSquadDTO createSquadAndProfile( String clubsId, ClubsSquadCreatedDTO squadCreatedDTO);
 
     List<ClubsSquadDTO> getClubsInfoList();
 

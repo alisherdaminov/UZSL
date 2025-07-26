@@ -19,7 +19,7 @@ public class Player {
     private PlayerServiceImpl playerService;
 
     @PostMapping("/{playerId}")
-    public ResponseEntity<AppResponse<PlayerDTO>> createPlayerInfom(
+    public ResponseEntity<AppResponse<PlayerDTO>> createPlayerInfo(
             @PathVariable("playerId") String playerId,
             @RequestBody PlayerCreatedDTO playerCreatedDTO) {
         return ResponseEntity.ok().body(new AppResponse<>(playerService.createPlayerInfo(playerId, playerCreatedDTO), "success", new Date()));

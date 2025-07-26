@@ -92,8 +92,9 @@ public class MatchServiceImpl implements MatchService {
     ///  GET ALL MATCH DAYS AND CLUBS LIST
     @Override
     public List<MatchDTO> getAllMatchesData() {
-        List<MatchEntity> entityList = matchRepository.findAll();
-        return entityList.stream().map(matchServiceDTO::toMatchesDTO).collect(Collectors.toList());
+        List<MatchDTO> entityList = matchRepository.findAll().stream().map(matchServiceDTO::toMatchesDTO).collect(Collectors.toList());
+        Collections.reverse(entityList);
+        return entityList;
     }
 
     ///  UPDATE CLUBS LOGO BY ID
