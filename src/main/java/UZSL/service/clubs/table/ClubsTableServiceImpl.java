@@ -1,6 +1,6 @@
 package UZSL.service.clubs.table;
 
-import UZSL.dto.extensions.ClubsTableServiceDTO;
+import UZSL.mapper.ClubsTableMapper;
 import UZSL.dto.clubs.match_info.ClubsTableDTO;
 import UZSL.entity.match.AwayTeamEntity;
 import UZSL.entity.match.HomeTeamEntity;
@@ -29,8 +29,7 @@ public class ClubsTableServiceImpl implements ClubsTableService {
     private HomeTeamRepository homeTeamRepository;
     @Autowired
     private AwayTeamRepository awayTeamRepository;
-    @Autowired
-    private ClubsTableServiceDTO clubsTableServiceDTO;
+    private ClubsTableMapper clubsTableMapper;
     @Autowired
     private ClubsTableAwayRepository clubsTableAwayRepository;
     @Autowired
@@ -114,7 +113,7 @@ public class ClubsTableServiceImpl implements ClubsTableService {
     @Override
     public List<ClubsTableDTO> getFullClubsTable() {
         List<ClubsTableEntity> entityList = clubsTableRepository.getLeagueTable();
-        return entityList.stream().map(clubsTableServiceDTO::toDTO).collect(Collectors.toList());
+        return entityList.stream().map(clubsTableMapper::toClubsTableDTO).collect(Collectors.toList());
     }
 
 

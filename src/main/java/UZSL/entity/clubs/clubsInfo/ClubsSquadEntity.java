@@ -3,8 +3,7 @@ package UZSL.entity.clubs.clubsInfo;
 import UZSL.entity.match.HomeTeamEntity;
 import UZSL.entity.match.TeamsEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,6 +11,9 @@ import java.util.List;
 @Table(name = "clubs_squad")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ClubsSquadEntity {
 
     @Id

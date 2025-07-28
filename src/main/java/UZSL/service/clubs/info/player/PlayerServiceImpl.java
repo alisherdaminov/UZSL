@@ -2,7 +2,7 @@ package UZSL.service.clubs.info.player;
 
 import UZSL.dto.clubs.clubs_info.player.created.PlayerCreatedDTO;
 import UZSL.dto.clubs.clubs_info.player.dto.PlayerDTO;
-import UZSL.dto.extensions.PlayerServiceDTO;
+import UZSL.mapper.PlayerMapper;
 import UZSL.entity.clubs.clubsInfo.*;
 import UZSL.entity.clubs.clubsInfo.player_info.PlayerCareerEntity;
 import UZSL.entity.clubs.clubsInfo.player_info.PlayerDetailEntity;
@@ -36,8 +36,7 @@ public class PlayerServiceImpl implements PlayerService {
     private PlayerDetailRepository playerDetailRepository;
     @Autowired
     private PlayerCareerRepository playerCareerRepository;
-    @Autowired
-    private PlayerServiceDTO playerServiceDTO;
+    private PlayerMapper playerMapper;
 
     /// CREATE PLAYER INFO
     @Override
@@ -47,22 +46,11 @@ public class PlayerServiceImpl implements PlayerService {
         Optional<MidFieldersEntity> optionalMidFielders = midfieldersRepository.findById(playerId);
         Optional<StrikersEntity> optionalStrikers = strikersRepository.findById(playerId);
 
-        if (optionalGoalKeepers.isEmpty() && optionalDefenders.isEmpty()
-                && optionalMidFielders.isEmpty() && optionalStrikers.isEmpty()) {
+        if (optionalGoalKeepers.isEmpty() && optionalDefenders.isEmpty() && optionalMidFielders.isEmpty() && optionalStrikers.isEmpty()) {
             throw new AppBadException("This id: " + playerId + " is not found!");
         }
 
-        PlayerDetailEntity playerDetail = new PlayerDetailEntity();
-        playerDetail.setFouls(playerCreated.getPlayerDetailCreated().getFouls());
-        playerDetail.setYellowCards(playerCreated.getPlayerDetailCreated().getYellowCards());
-        playerDetail.setAppearances(playerCreated.getPlayerDetailCreated().getAppearances());
-        playerDetail.setSprints(playerCreated.getPlayerDetailCreated().getSprints());
-        playerDetail.setIntensiveRuns(playerCreated.getPlayerDetailCreated().getIntensiveRuns());
-        playerDetail.setDistanceKm(playerCreated.getPlayerDetailCreated().getDistanceKm());
-        playerDetail.setSpeedKmH(playerCreated.getPlayerDetailCreated().getSpeedKmH());
-        playerDetail.setCrosses(playerCreated.getPlayerDetailCreated().getCrosses());
-
-        //calculating which is the same id for selected players id in db
+        PlayerDetailEntity playerDetail = PlayerMapper.toPlayerDetailEntity(playerCreated);
         if (optionalGoalKeepers.isPresent()) {
             playerDetail.setGoalKeepersPlayer(optionalGoalKeepers.get());
         } else if (optionalDefenders.isPresent()) {
@@ -72,16 +60,7 @@ public class PlayerServiceImpl implements PlayerService {
         } else optionalStrikers.ifPresent(playerDetail::setStrikersPlayer);
         playerDetailRepository.save(playerDetail);
 
-        PlayerCareerEntity playerCareer = new PlayerCareerEntity();
-        playerCareer.setAppearances(playerCreated.getPlayerCareerCreated().getAppearances());
-        playerCareer.setGoals(playerCreated.getPlayerCareerCreated().getGoals());
-        playerCareer.setAssists(playerCreated.getPlayerCareerCreated().getAssists());
-        playerCareer.setBallActions(playerCreated.getPlayerCareerCreated().getBallActions());
-        playerCareer.setDistanceKmForSeason(playerCreated.getPlayerCareerCreated().getDistanceKmForSeason());
-        playerCareer.setPenalties(playerCreated.getPlayerCareerCreated().getPenalties());
-
-
-        //calculating which is the same id for selected players id in db
+        PlayerCareerEntity playerCareer = PlayerMapper.toPlayerCareerEntity(playerCreated);
         if (optionalGoalKeepers.isPresent()) {
             playerCareer.setGoalKeepersCareer(optionalGoalKeepers.get());
         } else if (optionalDefenders.isPresent()) {
@@ -90,12 +69,14 @@ public class PlayerServiceImpl implements PlayerService {
             playerCareer.setMidFieldersCareer(optionalMidFielders.get());
         } else optionalStrikers.ifPresent(playerCareer::setStrikersCareer);
         playerCareerRepository.save(playerCareer);
+
         // Parent entity
-        PlayerEntity playerEntity = new PlayerEntity();
-        playerEntity.setPlayerDetailEntity(playerDetail);
-        playerEntity.setPlayerCareerEntity(playerCareer);
+        PlayerEntity playerEntity = PlayerEntity.builder()
+                .playerDetailEntity(playerDetail)
+                .playerCareerEntity(playerCareer)
+                .build();
         playerRepository.save(playerEntity);
-        return playerServiceDTO.toPlayerDTO(playerEntity);
+        return PlayerMapper.toDTO(playerEntity);
     }
 
     /// GET ALL PLAYER INFO LIST
@@ -118,7 +99,7 @@ public class PlayerServiceImpl implements PlayerService {
                             (career.getStrikersCareer() != null && career.getStrikersCareer().getClubsStrikersId().equals(playerId));
                     return isDetailMatch && isCareerMatch;
                 })
-                .map(playerServiceDTO::toPlayerDTO)
+                .map(PlayerMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -138,17 +119,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (optionalPlayerDetail.isEmpty() && optionalPlayerCareer.isEmpty()) {
             throw new AppBadException("This id: " + optionalPlayerDetail.get().getPlayerDetailId() + " is not found!");
         }
-        PlayerDetailEntity playerDetail = optionalPlayerDetail.get();
-        playerDetail.setFouls(playerCreated.getPlayerDetailCreated().getFouls());
-        playerDetail.setYellowCards(playerCreated.getPlayerDetailCreated().getYellowCards());
-        playerDetail.setAppearances(playerCreated.getPlayerDetailCreated().getAppearances());
-        playerDetail.setSprints(playerCreated.getPlayerDetailCreated().getSprints());
-        playerDetail.setIntensiveRuns(playerCreated.getPlayerDetailCreated().getIntensiveRuns());
-        playerDetail.setDistanceKm(playerCreated.getPlayerDetailCreated().getDistanceKm());
-        playerDetail.setSpeedKmH(playerCreated.getPlayerDetailCreated().getSpeedKmH());
-        playerDetail.setCrosses(playerCreated.getPlayerDetailCreated().getCrosses());
-
-        //calculating which is the same id for selected players id in db
+        PlayerDetailEntity playerDetail = PlayerMapper.toPlayerDetailEntity(playerCreated);
         if (optionalGoalKeepers.isPresent()) {
             playerDetail.setGoalKeepersPlayer(optionalGoalKeepers.get());
         } else if (optionalDefenders.isPresent()) {
@@ -161,15 +132,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (optionalPlayerCareer.isEmpty()) {
             throw new AppBadException("This player career's id : " + optionalPlayerCareer.get().getPlayerDetailId() + " is not found!");
         }
-        PlayerCareerEntity playerCareer = optionalPlayerCareer.get();
-        playerCareer.setAppearances(playerCreated.getPlayerCareerCreated().getAppearances());
-        playerCareer.setGoals(playerCreated.getPlayerCareerCreated().getGoals());
-        playerCareer.setAssists(playerCreated.getPlayerCareerCreated().getAssists());
-        playerCareer.setBallActions(playerCreated.getPlayerCareerCreated().getBallActions());
-        playerCareer.setDistanceKmForSeason(playerCreated.getPlayerCareerCreated().getDistanceKmForSeason());
-        playerCareer.setPenalties(playerCreated.getPlayerCareerCreated().getPenalties());
-
-        //calculating which is the same id for selected players id in db
+        PlayerCareerEntity playerCareer = PlayerMapper.toPlayerCareerEntity(playerCreated);
         if (optionalGoalKeepers.isPresent()) {
             playerCareer.setGoalKeepersCareer(optionalGoalKeepers.get());
         } else if (optionalDefenders.isPresent()) {
@@ -178,12 +141,14 @@ public class PlayerServiceImpl implements PlayerService {
             playerCareer.setMidFieldersCareer(optionalMidFielders.get());
         } else optionalStrikers.ifPresent(playerCareer::setStrikersCareer);
         playerCareerRepository.save(playerCareer);
+
         // Parent entity
-        PlayerEntity playerEntity = new PlayerEntity();
-        playerEntity.setPlayerDetailEntity(playerDetail);
-        playerEntity.setPlayerCareerEntity(playerCareer);
+        PlayerEntity playerEntity = PlayerEntity.builder()
+                .playerDetailEntity(playerDetail)
+                .playerCareerEntity(playerCareer)
+                .build();
         playerRepository.save(playerEntity);
-        return playerServiceDTO.toPlayerDTO(playerEntity);
+        return PlayerMapper.toDTO(playerEntity);
     }
 
     /// DELETE PLAYER INFO

@@ -1,7 +1,7 @@
 package UZSL.service.match;
 
 import UZSL.config.util.SpringSecurityUtil;
-import UZSL.dto.extensions.MatchServiceDTO;
+import UZSL.mapper.MatchMapper;
 import UZSL.dto.match.dto.MatchDTO;
 import UZSL.dto.match.dto.TeamsDTO;
 import UZSL.dto.match.created.MatchCreatedDTO;
@@ -45,8 +45,8 @@ public class MatchServiceImpl implements MatchService {
     private ClubsTableServiceImpl clubsTableService;
     @Autowired
     private ClubsInfoServiceImpl clubsInfoService;
-    @Autowired
-    private MatchServiceDTO matchServiceDTO;
+
+    private MatchMapper matchMapper;
 
 
     ///  CREATE MATCH DAYS WITH CLUBS
@@ -68,31 +68,31 @@ public class MatchServiceImpl implements MatchService {
         List<TeamsEntity> teamsEntityList = new ArrayList<>();
         if (matchCreatedDTO.getTeamsCreatedList() != null) {
             teamsEntityList = matchCreatedDTO.getTeamsCreatedList().stream()
-                    .map(dto -> matchServiceDTO.toTeamsEntity(dto, savedMatch)).collect(Collectors.toList());
+                    .map(dto -> matchMapper.toTeamsEntity(dto, savedMatch)).collect(Collectors.toList());
         }
         entity.setTeamsEntityList(teamsEntityList);
         //  return to  DTO
-        return matchServiceDTO.toMatchesDTO(entity);
+        return matchMapper.toMatchesDTO(entity);
     }
 
     /// GET MATCHES DAYS AND CLUB BY ID
     @Override
     public MatchDTO getByIdMatchesData(String matchId) {
         MatchEntity entity = matchRepository.findById(matchId).orElseThrow(() -> new AppBadException("Match id: " + matchId + " is not found!"));
-        return matchServiceDTO.toMatchesDTO(entity);
+        return matchMapper.toMatchesDTO(entity);
     }
 
     /// GET TEAMS BY ID
     @Override
     public TeamsDTO getByIdTeamsData(String teamsId) {
         TeamsEntity entity = teamsRepository.findById(teamsId).orElseThrow(() -> new AppBadException("Teams id: " + teamsId + " is not found!"));
-        return matchServiceDTO.toTeamsDTO(entity);
+        return matchMapper.toTeamsDTO(entity);
     }
 
     ///  GET ALL MATCH DAYS AND CLUBS LIST
     @Override
     public List<MatchDTO> getAllMatchesData() {
-        List<MatchDTO> entityList = matchRepository.findAll().stream().map(matchServiceDTO::toMatchesDTO).collect(Collectors.toList());
+        List<MatchDTO> entityList = matchRepository.findAll().stream().map(matchMapper::toMatchesDTO).collect(Collectors.toList());
         Collections.reverse(entityList);
         return entityList;
     }
@@ -135,7 +135,7 @@ public class MatchServiceImpl implements MatchService {
                 }).collect(Collectors.toList());
         entity.setTeamsEntityList(updatedList);
         matchRepository.save(entity);
-        return matchServiceDTO.toUpdateClubLogoDTO(entity);
+        return matchMapper.toUpdateClubLogoDTO(entity);
     }
 
     ///  UPDATE CLUBS GOALS AFTER EVERY MATCH ENDS
@@ -179,7 +179,7 @@ public class MatchServiceImpl implements MatchService {
             clubsTableService.calculateTeamStatsFromMatches(homeTeamsId, awayTeamsId);
         }
         matchRepository.save(entity);
-        return matchServiceDTO.toUpdateDTO(entity);
+        return matchMapper.toUpdateDTO(entity);
     }
 
     /// DELETE MATCHES DAYS AND CLUBS BY ID IN DATABASE

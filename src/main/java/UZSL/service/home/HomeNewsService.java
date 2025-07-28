@@ -6,6 +6,7 @@ import UZSL.dto.app.AppResponse;
 import org.springframework.data.domain.PageImpl;
 
 public interface HomeNewsService {
+
     HomeNewsDTO createPostNews(Integer userId, HomeNewsCreatedDTO homeNewsCreatedDTO);
 
     HomeNewsDTO getByUserIdPostNews(String postNewsId);

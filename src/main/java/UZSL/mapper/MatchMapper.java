@@ -1,4 +1,4 @@
-package UZSL.dto.extensions;
+package UZSL.mapper;
 
 import UZSL.dto.match.created.TeamsCreatedDTO;
 import UZSL.dto.match.dto.AwayTeamDTO;
@@ -22,33 +22,19 @@ import UZSL.repository.match.AwayTeamRepository;
 import UZSL.repository.match.HomeTeamRepository;
 import UZSL.repository.match.TeamsRepository;
 import UZSL.service.match.logo.MatchLogoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-public class MatchServiceDTO {
+public class MatchMapper {
 
-    private final HomeTeamRepository homeTeamRepository;
-    private final AwayTeamRepository awayTeamRepository;
-    private final TeamsRepository teamsRepository;
-    private final MatchLogoService matchLogoService;
-
-    @Autowired
-    public MatchServiceDTO(HomeTeamRepository homeTeamRepository,
-                           AwayTeamRepository awayTeamRepository,
-                           TeamsRepository teamsRepository,
-                           MatchLogoService matchLogoService) {
-        this.homeTeamRepository = homeTeamRepository;
-        this.awayTeamRepository = awayTeamRepository;
-        this.teamsRepository = teamsRepository;
-        this.matchLogoService = matchLogoService;
-    }
+    private HomeTeamRepository homeTeamRepository;
+    private AwayTeamRepository awayTeamRepository;
+    private TeamsRepository teamsRepository;
+    private MatchLogoService matchLogoService;
 
 
-    // TO HOME TEAM ENTITY
+    /// ENTITY TO DTO
     public TeamsEntity toTeamsEntity(TeamsCreatedDTO createdDTO, MatchEntity matchEntity) {
 
         List<TeamsEntity> optionalTeams = teamsRepository.findAll();
@@ -80,64 +66,7 @@ public class MatchServiceDTO {
         return teamsRepository.save(newTeams);
     }
 
-    // TO DTO FOR UPDATE CLUBS ALL GOALS
-    public MatchUpdatedDTO toUpdateDTO(MatchEntity entity) {
-        MatchUpdatedDTO dto = new MatchUpdatedDTO();
-        dto.setMatchUpdatedId(entity.getMatchId());
-        List<TeamsUpdatedDTO> teamsDTOList = entity.getTeamsEntityList().stream().map(
-                infoDto -> {
-                    // home dto set
-                    HomeTeamUpdatedDTO homeTeamDTO = new HomeTeamUpdatedDTO();
-                    homeTeamDTO.setHomeTeamId(infoDto.getHomeTeamEntity().getHomeTeamId());
-                    homeTeamDTO.setOwnGoal(infoDto.getHomeTeamEntity().getOwnGoal());
-                    /////////////////////////////////////////////////////
-                    // away dto set
-                    AwayTeamUpdatedDTO awayTeamDTO = new AwayTeamUpdatedDTO();
-                    awayTeamDTO.setAwayTeamId(infoDto.getAwayTeamEntity().getAwayTeamId());
-                    awayTeamDTO.setAwayGoal(infoDto.getAwayTeamEntity().getAwayGoal());
-                    /////////////////////////////////////////////////////
-                    // set teams dto
-                    TeamsUpdatedDTO teamsDTO = new TeamsUpdatedDTO();
-                    teamsDTO.setTeamsId(infoDto.getTeamsId());
-                    teamsDTO.setHomeTeam(homeTeamDTO);
-                    teamsDTO.setAwayTeam(awayTeamDTO);
-                    return teamsDTO;
-                }
-        ).collect(Collectors.toList());
-        dto.setTeamsUpdatedList(teamsDTOList);
-        return dto;
-    }
-
-
-    // TO DTO FOR UPDATE CLUBS LOGO
-    public MatchUpdatedLogoDTO toUpdateClubLogoDTO(MatchEntity entity) {
-        MatchUpdatedLogoDTO dto = new MatchUpdatedLogoDTO();
-        dto.setMatchUpdatedId(entity.getMatchId());
-        List<TeamsUpdatedLogoDTO> teamsDTOList = entity.getTeamsEntityList().stream().map(
-                infoDto -> {
-                    // home dto set
-                    HomeTeamUpdatedLogoDTO homeTeamDTO = new HomeTeamUpdatedLogoDTO();
-                    homeTeamDTO.setHomeTeamId(infoDto.getHomeTeamEntity().getHomeTeamId());
-                    homeTeamDTO.setHomeTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getHomeTeamEntity().getHomeTeamLogoId()));
-                    /////////////////////////////////////////////////////
-                    // away dto set
-                    AwayTeamUpdatedLogoDTO awayTeamDTO = new AwayTeamUpdatedLogoDTO();
-                    awayTeamDTO.setAwayTeamId(infoDto.getAwayTeamEntity().getAwayTeamId());
-                    awayTeamDTO.setAwayTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getAwayTeamEntity().getAwayTeamLogoId()));
-                    /////////////////////////////////////////////////////
-                    // set teams dto
-                    TeamsUpdatedLogoDTO teamsDTO = new TeamsUpdatedLogoDTO();
-                    teamsDTO.setTeamsId(infoDto.getTeamsId());
-                    teamsDTO.setHomeTeam(homeTeamDTO);
-                    teamsDTO.setAwayTeam(awayTeamDTO);
-                    return teamsDTO;
-                }
-        ).collect(Collectors.toList());
-        dto.setTeamsUpdatedList(teamsDTOList);
-        return dto;
-    }
-
-    // TO MATCHES DTO
+    /// TO MATCHES DTO
     public MatchDTO toMatchesDTO(MatchEntity entity) {
         MatchDTO dto = new MatchDTO();
         dto.setMatchId(entity.getMatchId());
@@ -170,7 +99,7 @@ public class MatchServiceDTO {
         return dto;
     }
 
-    // TO TEAMS DTO
+    /// TO TEAMS DTO
     public TeamsDTO toTeamsDTO(TeamsEntity entity) {
 
         // home dto set
@@ -192,4 +121,61 @@ public class MatchServiceDTO {
         teamsDTO.setAwayTeam(awayTeamDTO);
         return teamsDTO;
     }
+
+    /// TO DTO FOR UPDATE CLUBS ALL GOALS DTO
+    public MatchUpdatedDTO toUpdateDTO(MatchEntity entity) {
+        MatchUpdatedDTO dto = new MatchUpdatedDTO();
+        dto.setMatchUpdatedId(entity.getMatchId());
+        List<TeamsUpdatedDTO> teamsDTOList = entity.getTeamsEntityList().stream().map(
+                infoDto -> {
+                    // home dto set
+                    HomeTeamUpdatedDTO homeTeamDTO = new HomeTeamUpdatedDTO();
+                    homeTeamDTO.setHomeTeamId(infoDto.getHomeTeamEntity().getHomeTeamId());
+                    homeTeamDTO.setOwnGoal(infoDto.getHomeTeamEntity().getOwnGoal());
+                    /////////////////////////////////////////////////////
+                    // away dto set
+                    AwayTeamUpdatedDTO awayTeamDTO = new AwayTeamUpdatedDTO();
+                    awayTeamDTO.setAwayTeamId(infoDto.getAwayTeamEntity().getAwayTeamId());
+                    awayTeamDTO.setAwayGoal(infoDto.getAwayTeamEntity().getAwayGoal());
+                    /////////////////////////////////////////////////////
+                    // set teams dto
+                    TeamsUpdatedDTO teamsDTO = new TeamsUpdatedDTO();
+                    teamsDTO.setTeamsId(infoDto.getTeamsId());
+                    teamsDTO.setHomeTeam(homeTeamDTO);
+                    teamsDTO.setAwayTeam(awayTeamDTO);
+                    return teamsDTO;
+                }
+        ).collect(Collectors.toList());
+        dto.setTeamsUpdatedList(teamsDTOList);
+        return dto;
+    }
+
+    /// TO DTO FOR UPDATE CLUBS LOGO DTO
+    public MatchUpdatedLogoDTO toUpdateClubLogoDTO(MatchEntity entity) {
+        MatchUpdatedLogoDTO dto = new MatchUpdatedLogoDTO();
+        dto.setMatchUpdatedId(entity.getMatchId());
+        List<TeamsUpdatedLogoDTO> teamsDTOList = entity.getTeamsEntityList().stream().map(
+                infoDto -> {
+                    // home dto set
+                    HomeTeamUpdatedLogoDTO homeTeamDTO = new HomeTeamUpdatedLogoDTO();
+                    homeTeamDTO.setHomeTeamId(infoDto.getHomeTeamEntity().getHomeTeamId());
+                    homeTeamDTO.setHomeTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getHomeTeamEntity().getHomeTeamLogoId()));
+                    /////////////////////////////////////////////////////
+                    // away dto set
+                    AwayTeamUpdatedLogoDTO awayTeamDTO = new AwayTeamUpdatedLogoDTO();
+                    awayTeamDTO.setAwayTeamId(infoDto.getAwayTeamEntity().getAwayTeamId());
+                    awayTeamDTO.setAwayTeamsLogo(matchLogoService.teamsLogoDTO(infoDto.getAwayTeamEntity().getAwayTeamLogoId()));
+                    /////////////////////////////////////////////////////
+                    // set teams dto
+                    TeamsUpdatedLogoDTO teamsDTO = new TeamsUpdatedLogoDTO();
+                    teamsDTO.setTeamsId(infoDto.getTeamsId());
+                    teamsDTO.setHomeTeam(homeTeamDTO);
+                    teamsDTO.setAwayTeam(awayTeamDTO);
+                    return teamsDTO;
+                }
+        ).collect(Collectors.toList());
+        dto.setTeamsUpdatedList(teamsDTOList);
+        return dto;
+    }
+
 }

@@ -1,13 +1,15 @@
 package UZSL.entity.match;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "away_team")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AwayTeamEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

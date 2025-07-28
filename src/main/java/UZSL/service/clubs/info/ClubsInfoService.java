@@ -13,7 +13,7 @@ public interface ClubsInfoService {
 
     List<ClubsSquadDTO> getClubsInfoList();
 
-    ClubsSquadDTO updateSquad(String clubsId, ClubsSquadCreatedDTO squadCreatedDTO);
+    ClubsSquadDTO updateSquad(String clubsId,  String playerId,ClubsSquadCreatedDTO squadCreatedDTO);
 
     String deleteSquad(String clubsId);
 

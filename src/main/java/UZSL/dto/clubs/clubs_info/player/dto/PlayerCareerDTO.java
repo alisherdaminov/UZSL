@@ -1,11 +1,13 @@
 package UZSL.dto.clubs.clubs_info.player.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlayerCareerDTO {
 
@@ -15,5 +17,5 @@ public class PlayerCareerDTO {
     private String assists;
     private String ballActions;
     private String distanceKmForSeason;
-    private String Penalties;
+    private String penalties;
 }

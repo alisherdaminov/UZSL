@@ -31,11 +31,12 @@ public class ClubsInfo {
         return ResponseEntity.ok().body(new AppResponse<>(clubsInfoService.getClubsInfoList(), "success", new Date()));
     }
 
-    @PutMapping("/{clubsId}")
+    @PutMapping("/{clubsId}/{playerId}")
     public ResponseEntity<AppResponse<ClubsSquadDTO>> updateSquad(
             @PathVariable("clubsId") String clubsId,
+            @PathVariable("playerId") String playerId,
             @RequestBody ClubsSquadCreatedDTO createdDTO) {
-        return ResponseEntity.ok().body(new AppResponse<>(clubsInfoService.updateSquad(clubsId, createdDTO),
+        return ResponseEntity.ok().body(new AppResponse<>(clubsInfoService.updateSquad(clubsId, playerId, createdDTO),
                 "success", new Date()));
     }
 

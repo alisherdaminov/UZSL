@@ -2,10 +2,8 @@ package UZSL.entity.clubs.clubsInfo;
 
 import UZSL.entity.clubs.clubsInfo.player_info.PlayerCareerEntity;
 import UZSL.entity.clubs.clubsInfo.player_info.PlayerDetailEntity;
-import UZSL.entity.clubs.clubsInfo.player_info.PlayerEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +11,9 @@ import java.time.LocalDateTime;
 @Table(name = "clubs_defenders")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DefendersEntity {
 
     @Id

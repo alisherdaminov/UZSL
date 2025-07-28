@@ -4,7 +4,7 @@ import UZSL.dto.app.AppResponse;
 import UZSL.dto.auth.LoginDTO;
 import UZSL.dto.auth.ResponseDTO;
 import UZSL.dto.auth.UserCreated;
-import UZSL.dto.extensions.AuthServiceDTO;
+import UZSL.mapper.AuthMapper;
 import UZSL.entity.auth.UserEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.repository.auth.RolesRepository;
@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private RefreshTokenServiceImpl refreshTokenService;
     @Autowired
-    private AuthServiceDTO authServiceDTO;
+    private AuthMapper authMapper;
 
     /// USER REGISTRATION
     @Override
@@ -42,11 +42,7 @@ public class AuthServiceImpl implements AuthService {
         if (optional.isPresent()) {
             return new AppResponse<>("User exists");
         }
-        UserEntity user = new UserEntity();
-        user.setFullName(userCreated.getFullName());
-        user.setUsername(userCreated.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(userCreated.getPassword()));
-        user.setCreatedAt(LocalDateTime.now());
+        UserEntity user = authMapper.toUserEntity(userCreated);
         userRepository.save(user);
         rolesService.createRole(user.getUserId(), UzSlRoles.ROLE_USER);
         return new AppResponse<>("User successfully registered!");
@@ -63,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
         if (!bCryptPasswordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
             return new AppResponse<>("Wrong password!");
         }
-        ResponseDTO responseDTO = authServiceDTO.buildResponseDTO(user);
+        ResponseDTO responseDTO = authMapper.buildResponseDTO(user);
         return new AppResponse<>(responseDTO, "success", new Date());
     }
 

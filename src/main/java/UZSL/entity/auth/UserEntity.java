@@ -3,8 +3,7 @@ package UZSL.entity.auth;
 import UZSL.entity.home.HomeNewsEntity;
 import UZSL.entity.match.MatchLogoEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +12,9 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserEntity {
 
     @Id

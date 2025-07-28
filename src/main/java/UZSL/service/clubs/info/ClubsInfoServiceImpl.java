@@ -3,7 +3,7 @@ package UZSL.service.clubs.info;
 import UZSL.config.util.SpringSecurityUtil;
 import UZSL.dto.clubs.clubs_info.created.*;
 import UZSL.dto.clubs.clubs_info.dto.*;
-import UZSL.dto.extensions.ClubsSquadServiceDTO;
+import UZSL.mapper.ClubsSquadMapper;
 import UZSL.entity.clubs.clubsInfo.*;
 import UZSL.entity.match.HomeTeamEntity;
 import UZSL.enums.UzSlRoles;
@@ -27,7 +27,17 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
     @Autowired
     private HomeTeamRepository homeTeamRepository;
     @Autowired
-    private ClubsSquadServiceDTO clubsSquadServiceDTO;
+    private GoalKeepersRepository goalKeepersRepository;
+    @Autowired
+    private DefendersRepository defendersRepository;
+    @Autowired
+    private MidfieldersRepository midfieldersRepository;
+    @Autowired
+    private StrikersRepository strikersRepository;
+    @Autowired
+    private ClubsProfileRepository clubsProfileRepository;
+
+    private ClubsSquadMapper clubsSquadMapper;
 
     /// CREATE SQUAD AND PROFILE
     @Override
@@ -49,8 +59,9 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
         if (squadCreatedDTO.getGoalKeepers() != null) {
             List<GoalKeepersEntity> goalKeepers = squadCreatedDTO.getGoalKeepers().stream()
                     .map(dto -> {
-                        GoalKeepersEntity entity = clubsSquadServiceDTO.toGoalKeeperEntity(dto, savedSquad);
+                        GoalKeepersEntity entity = clubsSquadMapper.toGoalKeeperEntity(dto);
                         entity.setClubsSquadInGoalKeepers(savedSquad);
+                        goalKeepersRepository.save(entity);
                         return entity;
                     }).collect(Collectors.toList());
             clubsSquad.setGoalKeepersEntityList(goalKeepers);
@@ -60,8 +71,9 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
         if (squadCreatedDTO.getDefenders() != null) {
             List<DefendersEntity> defenders = squadCreatedDTO.getDefenders().stream()
                     .map(dto -> {
-                        DefendersEntity entity = clubsSquadServiceDTO.toDefendersEntity(dto, savedSquad);
+                        DefendersEntity entity = clubsSquadMapper.toDefendersEntity(dto);
                         entity.setClubsSquadInDefendersEntity(savedSquad);
+                        defendersRepository.save(entity);
                         return entity;
                     }).collect(Collectors.toList());
             clubsSquad.setDefenderEntityList(defenders);
@@ -71,8 +83,9 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
         if (squadCreatedDTO.getMidFielders() != null) {
             List<MidFieldersEntity> midfielders = squadCreatedDTO.getMidFielders().stream()
                     .map(dto -> {
-                        MidFieldersEntity entity = clubsSquadServiceDTO.toMidfieldersEntity(dto, savedSquad);
+                        MidFieldersEntity entity = clubsSquadMapper.toMidfieldersEntity(dto);
                         entity.setClubsSquadInMidfielder(savedSquad);
+                        midfieldersRepository.save(entity);
                         return entity;
                     }).collect(Collectors.toList());
             clubsSquad.setMidFieldersEntityList(midfielders);
@@ -82,33 +95,34 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
         if (squadCreatedDTO.getStrikers() != null) {
             List<StrikersEntity> strikers = squadCreatedDTO.getStrikers().stream()
                     .map(dto -> {
-                        StrikersEntity entity = clubsSquadServiceDTO.toStrikersEntity(dto, savedSquad);
+                        StrikersEntity entity = clubsSquadMapper.toStrikersEntity(dto);
                         entity.setClubsSquadInStriker(savedSquad);
+                        strikersRepository.save(entity);
                         return entity;
                     }).collect(Collectors.toList());
             clubsSquad.setStrikersEntityList(strikers);
         }
 
         // 6. Profile
-        ClubsProfileEntity profile = clubsSquadServiceDTO.getClubsProfileEntity(squadCreatedDTO, savedSquad);
+        ClubsProfileEntity profile = clubsSquadMapper.getClubsProfileEntity(squadCreatedDTO);
         profile.setClubsSquadProfile(savedSquad);
         clubsSquad.setClubsProfileEntity(profile);
-
+        clubsProfileRepository.save(profile);
         // 8. Convert to DTO
-        return clubsSquadServiceDTO.toClubsSquadDTO(savedSquad);
+        return clubsSquadMapper.toClubsSquadDTO(savedSquad);
     }
 
     /// GET CLUBS ALL DATA IN LIST
     @Override
     public List<ClubsSquadDTO> getClubsInfoList() {
-        List<ClubsSquadDTO> dtoList = clubsSquadRepository.findAll().stream().map(clubsSquadServiceDTO::toClubsSquadDTO).collect(Collectors.toList());
+        List<ClubsSquadDTO> dtoList = clubsSquadRepository.findAll().stream().map(clubsSquadMapper::toClubsSquadDTO).collect(Collectors.toList());
         Collections.reverse(dtoList);
         return dtoList;
     }
 
     /// UPDATE CLUBS SQUAD
     @Override
-    public ClubsSquadDTO updateSquad(String clubsId, ClubsSquadCreatedDTO squadCreatedDTO) {
+    public ClubsSquadDTO updateSquad(String clubsId, String playerId, ClubsSquadCreatedDTO squadCreatedDTO) {
         Optional<ClubsSquadEntity> optionalClubsSquad = clubsSquadRepository.findById(clubsId);
         if (optionalClubsSquad.isEmpty()) {
             throw new AppBadException("Squad id: " + clubsId + " is not found!");
@@ -126,7 +140,12 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
         List<GoalKeepersEntity> goalKeepersEntityList = new ArrayList<>();
         if (squadCreatedDTO.getGoalKeepers() != null) {
             goalKeepersEntityList = squadCreatedDTO.getGoalKeepers().stream().map(
-                    goalKeepersDTO -> clubsSquadServiceDTO.toUpdateGoalKeeperEntity(goalKeepersDTO, saved)).collect(Collectors.toList());
+                    goalKeepersDTO -> {
+                        GoalKeepersEntity goalKeepersEntity = clubsSquadMapper.toUpdateGoalKeeperEntity(goalKeepersDTO, playerId);
+                        goalKeepersEntity.setClubsSquadInGoalKeepers(entity);//PARENT LINK
+                        goalKeepersRepository.updateGoalkeepers(playerId, goalKeepersDTO.getFirstName(), goalKeepersDTO.getLastName(), goalKeepersDTO.getClubNumber());
+                        return goalKeepersEntity;
+                    }).collect(Collectors.toList());
         }
         entity.setGoalKeepersEntityList(goalKeepersEntityList);
 
@@ -134,7 +153,12 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
         List<DefendersEntity> defendersEntityList = new ArrayList<>();
         if (squadCreatedDTO.getDefenders() != null) {
             defendersEntityList = squadCreatedDTO.getDefenders().stream().map(
-                    defenders -> clubsSquadServiceDTO.toUpdateDefendersEntity(defenders, saved)).collect(Collectors.toList());
+                    defenders -> {
+                        DefendersEntity defendersEntity = clubsSquadMapper.toUpdateDefendersEntity(defenders, playerId);
+                        defendersEntity.setClubsSquadInDefendersEntity(entity);//PARENT LINK
+                        defendersRepository.updateDefenders(playerId, defenders.getFirstName(), defenders.getLastName(), defenders.getClubNumber());
+                        return defendersEntity;
+                    }).collect(Collectors.toList());
         }
         entity.setDefenderEntityList(defendersEntityList);
 
@@ -142,20 +166,37 @@ public class ClubsInfoServiceImpl implements ClubsInfoService {
         List<MidFieldersEntity> midFieldersEntityList = new ArrayList<>();
         if (squadCreatedDTO.getMidFielders() != null) {
             midFieldersEntityList = squadCreatedDTO.getMidFielders().stream().map(
-                    midFielders -> clubsSquadServiceDTO.toUpdateMidfieldersEntity(midFielders, saved)).collect(Collectors.toList());
+                    midFielders -> {
+                        MidFieldersEntity midFieldersEntity = clubsSquadMapper.toUpdateMidfieldersEntity(midFielders, playerId);
+                        midFieldersEntity.setClubsSquadInMidfielder(entity);//PARENT LINK
+                        midfieldersRepository.updateMidFielders(playerId, midFielders.getFirstName(), midFielders.getLastName(), midFielders.getClubNumber());
+                        return midFieldersEntity;
+                    }).collect(Collectors.toList());
         }
         entity.setMidFieldersEntityList(midFieldersEntityList);
 
-        //update Strikers
+        //striker
         List<StrikersEntity> strikersEntityList = new ArrayList<>();
         if (squadCreatedDTO.getStrikers() != null) {
             strikersEntityList = squadCreatedDTO.getStrikers().stream().map(
-                    strikers -> clubsSquadServiceDTO.toUpdateStrikersEntity(strikers, saved)).collect(Collectors.toList());
+                    strikers -> {
+                        StrikersEntity strikersEntity = clubsSquadMapper.toUpdateStrikersEntity(strikers, playerId);
+                        strikersEntity.setClubsSquadInStriker(entity);//PARENT LINK
+                        strikersRepository.updateStrikers(playerId, strikers.getFirstName(), strikers.getLastName(), strikers.getClubNumber());
+                        return strikersEntity;
+                    }
+            ).collect(Collectors.toList());
         }
         entity.setStrikersEntityList(strikersEntityList);
+
         //update clubs profile
-        clubsSquadServiceDTO.updateClubsProfileEntity(squadCreatedDTO, saved);
-        return clubsSquadServiceDTO.toClubsSquadDTO(entity);
+        ClubsProfileEntity clubsProfile = clubsSquadMapper.toUpdateClubsProfileEntity(squadCreatedDTO, entity.getClubsSquadId());
+        clubsProfile.setClubsSquadProfile(entity);
+        clubsProfileRepository.updateClubsProfile(entity.getClubsSquadId(), clubsProfile.getStadiumName(),
+                clubsProfile.getFounded(), clubsProfile.getClubsColor(), clubsProfile.getStreet(),
+                clubsProfile.getCity(), clubsProfile.getDirection(), clubsProfile.getPhone(), clubsProfile.getFax(),
+                clubsProfile.getWebsiteName(), clubsProfile.getEmailName());
+        return clubsSquadMapper.toClubsSquadDTO(entity);
     }
 
     /// DELETE CLUBS SQUAD

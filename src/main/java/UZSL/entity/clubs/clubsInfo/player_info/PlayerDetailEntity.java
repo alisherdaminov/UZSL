@@ -5,8 +5,7 @@ import UZSL.entity.clubs.clubsInfo.GoalKeepersEntity;
 import UZSL.entity.clubs.clubsInfo.MidFieldersEntity;
 import UZSL.entity.clubs.clubsInfo.StrikersEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +13,9 @@ import java.time.LocalDateTime;
 @Table(name = "clubs_player_detail")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PlayerDetailEntity {
 
     @Id

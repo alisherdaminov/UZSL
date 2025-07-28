@@ -2,8 +2,7 @@ package UZSL.entity.match;
 
 import UZSL.entity.auth.UserEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +10,9 @@ import java.time.LocalDateTime;
 @Table(name = "match_logo")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MatchLogoEntity {
     @Id
     private String matchLogoId;

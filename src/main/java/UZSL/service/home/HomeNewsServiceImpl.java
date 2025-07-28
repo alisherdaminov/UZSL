@@ -4,7 +4,7 @@ import UZSL.config.util.SpringSecurityUtil;
 import UZSL.dto.app.AppResponse;
 import UZSL.dto.Home.HomeNewsCreatedDTO;
 import UZSL.dto.Home.HomeNewsDTO;
-import UZSL.dto.extensions.HomeServiceDTO;
+import UZSL.mapper.HomeMapper;
 import UZSL.entity.home.HomeNewsEntity;
 import UZSL.enums.UzSlRoles;
 import UZSL.exception.AppBadException;
@@ -27,8 +27,7 @@ public class HomeNewsServiceImpl implements HomeNewsService {
     private HomeNewsRepository homeNewsRepository;
     @Autowired
     private HomeNewsImageService homeNewsImageService;
-    @Autowired
-    private HomeServiceDTO homeServiceDTO;
+    private HomeMapper homeMapper;
 
     /// CREATE HOME NEWS
     @Override
@@ -38,15 +37,10 @@ public class HomeNewsServiceImpl implements HomeNewsService {
             throw new AppBadException("You do not have any permission to create this post news!");
         }
         if (SpringSecurityUtil.hasRole(UzSlRoles.ROLE_ADMIN) && userId.equals(currentUser)) {
-            HomeNewsEntity entity = new HomeNewsEntity();
-            entity.setTitle(homeNewsCreatedDTO.getTitle());
-            entity.setContent(homeNewsCreatedDTO.getContent());
-            entity.setHomeImageId(homeNewsCreatedDTO.getHomeImageCreatedDTO().getHomeImageCreatedId());
+            HomeNewsEntity entity = homeMapper.toHomeEntity(homeNewsCreatedDTO);
             entity.setUserId(currentUser);
-            entity.setAuthor(homeNewsCreatedDTO.getAuthor());
-            entity.setCreatedAt(LocalDateTime.now());
             homeNewsRepository.save(entity);
-            return homeServiceDTO.createByUserIdPostNewsDTO(entity);
+            return homeMapper.toCreateDTO(entity);
         }
         throw new AppBadException("Unauthorized attempt to create post!");
     }
@@ -55,7 +49,7 @@ public class HomeNewsServiceImpl implements HomeNewsService {
     @Override
     public HomeNewsDTO getByUserIdPostNews(String postNewsId) {
         HomeNewsEntity entity = homeNewsRepository.findById(postNewsId).orElseThrow(() -> new AppBadException("Post news id: " + postNewsId + " is not found!"));
-        return homeServiceDTO.createByUserIdPostNewsDTO(entity);
+        return homeMapper.toCreateDTO(entity);
     }
 
     /// GET ALL HOME NEWS LIST
@@ -64,7 +58,7 @@ public class HomeNewsServiceImpl implements HomeNewsService {
         PageRequest request = PageRequest.of(page, size);
         Integer userId = SpringSecurityUtil.getCurrentUserId();
         Page<HomeNewsEntity> entityPage = homeNewsRepository.findByUserIdOrderByCreatedAtDesc(userId, request);
-        List<HomeNewsDTO> postNewsDTOList = entityPage.getContent().stream().map(homeServiceDTO::getAllByUserIdPostNewsDTO).toList();
+        List<HomeNewsDTO> postNewsDTOList = entityPage.getContent().stream().map(homeMapper::toUserByIdDTO).toList();
         return new PageImpl<>(postNewsDTOList, request, entityPage.getTotalElements());
     }
 
@@ -94,7 +88,7 @@ public class HomeNewsServiceImpl implements HomeNewsService {
             if (oldPhotoId != null) {
                 homeNewsImageService.updatePhoto(oldPhotoId, userId);
             }
-            return homeServiceDTO.updatedContentPostNewsDTO(entity);
+            return homeMapper.toUpdateDTO(entity);
         }
         throw new AppBadException("Unauthorized attempt to update this post!");
     }
