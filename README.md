@@ -18,7 +18,7 @@ uzsl/
 ├── presentation/     → REST Controllers (input layer)
 └── shared/           → Common enums, error codes, and utils
 
-- Tech Stack: Java 17, Spring Boot 3, Spring Security, Spring Data JPA,DDD, Ports & Adapters, Clean Architecture, PostgreSQL, WT + Role-based access (RBAC), Swagger / OpenAPI
+- Tech Stack: Java 17, Spring Boot 3, Spring Security, Spring Data JPA,DDD, Ports & Adapters, Clean Architecture, PostgreSQL, Swagger
 - Key Modules
 player – Tracks individual player performance
 club – Manages club profiles, squads, logos
