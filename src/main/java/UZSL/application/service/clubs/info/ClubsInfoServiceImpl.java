@@ -3,14 +3,14 @@ package UZSL.application.service.clubs.info;
 import UZSL.application.dto.clubs.clubs_info.created.ClubsSquadCreatedDTO;
 import UZSL.application.dto.clubs.clubs_info.dto.ClubsSquadDTO;
 import UZSL.domain.model.entity.clubs.clubsInfo.*;
+import UZSL.domain.repository.clubs.clubsInfo.*;
 import UZSL.domain.service.clubs.info.ClubsInfoService;
-import UZSL.infrastructure.adapter.repository.clubs.clubsInfo.*;
 import UZSL.shared.util.SpringSecurityUtil;
 import UZSL.application.mapper.ClubsSquadMapper;
 import UZSL.domain.model.entity.match.HomeTeamEntity;
 import UZSL.shared.enums.UzSlRoles;
 import UZSL.shared.exception.AppBadException;
-import UZSL.infrastructure.adapter.repository.match.HomeTeamRepository;
+import UZSL.domain.repository.match.HomeTeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -6,7 +6,7 @@ import UZSL.domain.model.entity.history.HistoryEntity;
 import UZSL.domain.service.history.HistoryService;
 import UZSL.shared.exception.AppBadException;
 import UZSL.application.mapper.HistoryMapper;
-import UZSL.infrastructure.adapter.repository.history.HistoryRepository;
+import UZSL.domain.repository.history.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

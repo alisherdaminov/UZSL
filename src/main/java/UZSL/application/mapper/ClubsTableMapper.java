@@ -4,7 +4,7 @@ import UZSL.application.dto.clubs.match_info.ClubsTableDTO;
 import UZSL.application.dto.clubs.match_info.away_club.ClubsTableAwayDTO;
 import UZSL.application.dto.clubs.match_info.home_club.ClubsTableHomeDTO;
 import UZSL.domain.model.entity.clubs.table.ClubsTableEntity;
-import UZSL.infrastructure.adapter.repository.clubs.table.ClubsTableRepository;
+import UZSL.domain.repository.clubs.table.ClubsTableRepository;
 import org.springframework.stereotype.Component;
 
 @Component

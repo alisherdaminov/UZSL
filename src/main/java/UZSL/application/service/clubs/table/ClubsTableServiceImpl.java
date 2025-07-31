@@ -9,11 +9,11 @@ import UZSL.domain.model.entity.clubs.table.ClubsTableEntity;
 import UZSL.domain.model.entity.clubs.table.ClubsTableHomeEntity;
 import UZSL.domain.service.clubs.table.ClubsTableService;
 import UZSL.shared.exception.AppBadException;
-import UZSL.infrastructure.adapter.repository.match.AwayTeamRepository;
-import UZSL.infrastructure.adapter.repository.match.HomeTeamRepository;
-import UZSL.infrastructure.adapter.repository.clubs.table.ClubsTableAwayRepository;
-import UZSL.infrastructure.adapter.repository.clubs.table.ClubsTableHomeRepository;
-import UZSL.infrastructure.adapter.repository.clubs.table.ClubsTableRepository;
+import UZSL.domain.repository.match.AwayTeamRepository;
+import UZSL.domain.repository.match.HomeTeamRepository;
+import UZSL.domain.repository.clubs.table.ClubsTableAwayRepository;
+import UZSL.domain.repository.clubs.table.ClubsTableHomeRepository;
+import UZSL.domain.repository.clubs.table.ClubsTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

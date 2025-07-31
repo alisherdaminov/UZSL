@@ -5,7 +5,7 @@ import UZSL.application.dto.auth.ResponseDTO;
 import UZSL.application.dto.auth.UserCreated;
 import UZSL.domain.model.entity.auth.UserEntity;
 import UZSL.shared.enums.UzSlRoles;
-import UZSL.infrastructure.adapter.repository.auth.RolesRepository;
+import UZSL.domain.repository.auth.RolesRepository;
 import UZSL.application.service.authentication.refresh.RefreshTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

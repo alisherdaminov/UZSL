@@ -4,8 +4,8 @@ import UZSL.domain.model.entity.auth.RefreshTokenEntity;
 import UZSL.domain.model.entity.auth.UserEntity;
 import UZSL.domain.service.authentication.refresh.RefreshTokenService;
 import UZSL.shared.exception.AppBadException;
-import UZSL.infrastructure.adapter.repository.auth.RefreshTokenRepository;
-import UZSL.infrastructure.adapter.repository.auth.UserRepository;
+import UZSL.domain.repository.auth.RefreshTokenRepository;
+import UZSL.domain.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

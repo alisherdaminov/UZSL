@@ -18,9 +18,9 @@ import UZSL.domain.model.entity.match.HomeTeamEntity;
 import UZSL.domain.model.entity.match.MatchEntity;
 import UZSL.domain.model.entity.match.TeamsEntity;
 import UZSL.shared.exception.AppBadException;
-import UZSL.infrastructure.adapter.repository.match.AwayTeamRepository;
-import UZSL.infrastructure.adapter.repository.match.HomeTeamRepository;
-import UZSL.infrastructure.adapter.repository.match.TeamsRepository;
+import UZSL.domain.repository.match.AwayTeamRepository;
+import UZSL.domain.repository.match.HomeTeamRepository;
+import UZSL.domain.repository.match.TeamsRepository;
 import UZSL.application.service.match.logo.MatchLogoService;
 import org.springframework.stereotype.Component;
 

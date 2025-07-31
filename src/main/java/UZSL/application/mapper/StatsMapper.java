@@ -7,8 +7,8 @@ import UZSL.domain.model.entity.clubs.clubsInfo.ClubsSquadEntity;
 import UZSL.domain.model.entity.stats.StatsEntity;
 import UZSL.domain.model.entity.stats.StatsPlayersEntity;
 import UZSL.shared.exception.AppBadException;
-import UZSL.infrastructure.adapter.repository.clubs.clubsInfo.ClubsSquadRepository;
-import UZSL.infrastructure.adapter.repository.stats.StatsPlayerRepository;
+import UZSL.domain.repository.clubs.clubsInfo.ClubsSquadRepository;
+import UZSL.domain.repository.stats.StatsPlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

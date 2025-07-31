@@ -5,7 +5,7 @@ import UZSL.application.dto.stats.dto.StatsDTO;
 import UZSL.domain.model.entity.stats.StatsEntity;
 import UZSL.application.mapper.StatsMapper;
 import UZSL.domain.service.stats.StatsService;
-import UZSL.infrastructure.adapter.repository.stats.StatsRepository;
+import UZSL.domain.repository.stats.StatsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
