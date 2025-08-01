@@ -20,7 +20,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * HomeNewsServiceImpl implements HomeNewsService and override bellow functions these are for creation of UZSL clubs daily news, story
+ *HomeNewsImageService is for attaching of the current news image,
+ * all news data is showing with some images
+ * */
 @Service
 public class HomeNewsServiceImpl implements HomeNewsService {
 

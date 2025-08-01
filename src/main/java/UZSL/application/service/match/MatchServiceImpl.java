@@ -29,6 +29,12 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * MatchServiceImpl implements MatchService override bellow functions these are for creation of UZSL clubs, matches\
+ * clubs logo is also creating and set in DB, and can be updated
+ * before saving matches that teams divided into home and away parts which lead to create new seasons matches
+ * there is also a ClubsTableServiceImpl which the method is for calculation of UZSL table in real time, once update function is done!
+ * */
 @Service
 public class MatchServiceImpl implements MatchService {
 
@@ -44,8 +50,6 @@ public class MatchServiceImpl implements MatchService {
     private MatchLogoService matchLogoService;
     @Autowired
     private ClubsTableServiceImpl clubsTableService;
-    @Autowired
-    private ClubsInfoServiceImpl clubsInfoService;
     @Autowired
     private MatchMapper matchMapper;
 

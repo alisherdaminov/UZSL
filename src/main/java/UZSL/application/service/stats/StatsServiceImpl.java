@@ -17,6 +17,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This StatsServiceImpl service is for players over all statistics, goals, assists, shots, own goals and penalties
+ *Players fullname, clubs number or name is coming from another DATABASE which is ClubsSquad table,
+ * in this service that statistics, goals, assists, shots, own goals and penalties will be added and saved it's DATABASE
+ * which is StatsRepository and statsPlayerRepository
+ * */
 @Service
 public class StatsServiceImpl implements StatsService {
 
@@ -27,7 +33,7 @@ public class StatsServiceImpl implements StatsService {
     @Autowired
     private StatsMapper statsMapper;
 
-
+    ///  CREATE STATS
     @Override
     public StatsDTO createStats(StatsCreatedDTO createdDTO) {
         StatsEntity statsEntity = statsMapper.toEntity(createdDTO);
@@ -35,6 +41,7 @@ public class StatsServiceImpl implements StatsService {
         return statsMapper.toStatsDTO(statsEntity);
     }
 
+    /// GET ALL STATS DATA IN LIST
     @Override
     public List<StatsDTO> getAllStats() {
         return statsRepository.findAll().stream()
@@ -43,6 +50,7 @@ public class StatsServiceImpl implements StatsService {
                 .collect(Collectors.toList());
     }
 
+    /// GET BY ID STATS DATA AND IN A StatsDTO COMPRISES LIST OF PLAYERS OBJECT
     @Override
     public StatsDTO getStatsById(String playerId) {
         StatsPlayersEntity player = statsPlayerRepository.findById(playerId).orElseThrow(() -> new AppBadException("Player ID is not found!"));
@@ -62,7 +70,7 @@ public class StatsServiceImpl implements StatsService {
                 .build();
     }
 
-
+    ///  UPDATE STATS
     @Override
     public StatsDTO updateStats(String statesId, StatsCreatedDTO createdDTO) {
         StatsEntity statsEntity = statsMapper.toUpdateEntity(statesId, createdDTO);
@@ -70,6 +78,7 @@ public class StatsServiceImpl implements StatsService {
         return statsMapper.toStatsDTO(statsEntity);
     }
 
+    ///  DELETE STATS
     @Override
     public String deleteStats(String statesId) {
         statsRepository.deleteById(statesId);

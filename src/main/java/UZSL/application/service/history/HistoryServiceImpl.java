@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * HistoryServiceImpl implements HistoryService and override bellow functions these are for creation of UZSL clubs history, story, amazing moments
+ * Each clubs can have chance to announce its own legendary football players ever! once giving their clubs info to UZSL administrations
+ *
+ * */
 @Service
 public class HistoryServiceImpl implements HistoryService {
 

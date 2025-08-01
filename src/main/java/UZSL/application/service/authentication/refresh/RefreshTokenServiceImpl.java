@@ -14,6 +14,11 @@ import java.util.Optional;
 
 import static UZSL.shared.util.JwtUtil.generateRefreshToken;
 
+/**
+ * RefreshTokenServiceImpl might generate a refresh token once access token expired and that has a few functions
+ * Bellow void functions override from RefreshTokenService where the ones have
+ *
+ * */
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 

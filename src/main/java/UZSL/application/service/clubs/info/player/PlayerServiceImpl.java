@@ -25,7 +25,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+/**
+ * PlayerServiceImpl implements PlayerService which has own functions override and usages for create, get, update, delete after saved goal keeper, defenders,
+ * midfielders,strikers, once fetching of goal keeper, defenders, midfielders,strikers that depend to players detail and career and then it will be done!
+ * PlayerMapper is for mapper.
+ * Before creation of the data that players detail and career for shown just player's id!
+ * */
 @Service
 public class PlayerServiceImpl implements PlayerService {
 

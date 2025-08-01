@@ -19,6 +19,12 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Optional;
 
+/**
+ * AuthServiceImpl is for user registration and login as well as log out, before accessing into the system
+ * by checking AUTHENTICATION - TOKEN, users password is bcrypt
+ * and Roles are also identifying by using RolesRepository and for refresh token is a RefreshTokenServiceImpl which will be generate automatically.
+ * Additionally, AuthMapper is used for mapper
+ * */
 @Service
 public class AuthServiceImpl implements AuthService {
 

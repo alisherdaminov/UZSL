@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * RolesService is for creation of users role and saving into the DATABASE which is RolesRepository
+ * */
 @Service
 public class RolesService {
 

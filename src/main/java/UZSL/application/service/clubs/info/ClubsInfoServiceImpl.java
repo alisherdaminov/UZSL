@@ -19,7 +19,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+/**
+ * ClubsInfoServiceImpl implements ClubsInfoService which has own functions override and usages for create, get, update, delete purposes
+ * once creating of goal keeper, defenders, midfielders,strikers that depend to players detail and career and then it will be done!
+ * ClubsSquadMapper is for mapper.
+ * Before creation of the data that players detail and career for shown just player's id!
+ * HomeTeamRepository and ClubsSquadRepository have some data of players which was saved earlier!
+ * */
 @Service
 public class ClubsInfoServiceImpl implements ClubsInfoService {
 
