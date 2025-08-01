@@ -15,6 +15,9 @@ public class StatsDTO {
 
     private String statsId;
     private String statsName;
-    private List<StatsPlayersDTO> statsPlayersList;
-
+    private List<StatsPlayersDTO> topGoals;
+    private List<StatsPlayersDTO> topAssists;
+    private List<StatsPlayersDTO> topShots;
+    private List<StatsPlayersDTO> topOwnGoals;
+    private List<StatsPlayersDTO> topPenalties;
 }

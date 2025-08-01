@@ -30,6 +30,11 @@ public class Stats {
         return ResponseEntity.ok().body(new AppResponse<>(service.getAllStats(), "success", new Date()));
     }
 
+    @GetMapping("/{statsId}")
+    public ResponseEntity<AppResponse<StatsDTO>> getStatsById(@PathVariable("statsId") String statsId) {
+        return ResponseEntity.ok().body(new AppResponse<>(service.getStatsById(statsId), "success", new Date()));
+    }
+
     @PutMapping("/{statsId}")
     public ResponseEntity<AppResponse<StatsDTO>> updateStats(
             @PathVariable("statsId") String statsId,

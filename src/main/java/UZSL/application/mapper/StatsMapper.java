@@ -142,5 +142,22 @@ public class StatsMapper {
                         .build()).collect(Collectors.toList());
     }
 
+    public StatsPlayersDTO toPlayersDTO(StatsPlayersEntity playersEntity) {
+        return StatsPlayersDTO.builder()
+                .statsPlayerId(playersEntity.getStatsPlayerId())
+                .title(playersEntity.getTitle())
+                .firstName(playersEntity.getFirstName())
+                .lastName(playersEntity.getLastName())
+                .clubNumber(playersEntity.getClubNumber())
+                .clubsFullName(playersEntity.getClubsFullName())
+                .goals(playersEntity.getGoals())
+                .assist(playersEntity.getAssist())
+                .shots(playersEntity.getShots())
+                .ownGoal(playersEntity.getOwnGoal())
+                .penalties(playersEntity.getPenalties())
+                .createdAt(playersEntity.getCreatedAt())
+                .build();
+    }
+
 
 }
