@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * This StatsServiceImpl service is for players over all statistics, goals, assists, shots, own goals and penalties
  *Players fullname, clubs number or name is coming from another DATABASE which is ClubsSquad table,
  * in this service that statistics, goals, assists, shots, own goals and penalties will be added and saved it's DATABASE
- * which is StatsRepository and statsPlayerRepository
+ * which are StatsRepository and statsPlayerRepository
  * */
 @Service
 public class StatsServiceImpl implements StatsService {

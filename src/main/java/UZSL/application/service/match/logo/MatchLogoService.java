@@ -28,6 +28,10 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * MatchLogoService is for setting clubs logo
+ * this logo can be created, got, updated and deleted!
+ * */
 @Service
 public class MatchLogoService {
 

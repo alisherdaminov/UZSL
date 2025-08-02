@@ -28,6 +28,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * HomeNewsImageService is for storing home new images once given the news
+ * this image can be created, got, updated and deleted!
+ */
 @Service
 public class HomeNewsImageService {
 
