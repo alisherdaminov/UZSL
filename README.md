@@ -1,6 +1,6 @@
 UZSL - Uzbekistan Super League - Management System
 A modern backend system built with Java 17, Spring Boot, and Domain-Driven Design (DDD) for managing Uzbekistan’s national football league — players, matches, clubs, and live statistics.
-
+- All designs have just taken from bundesliga.com.
 - Features at a Glance
 // Admin & user roles with JWT authentication
 ⚽ Manage player statistics: goals, assists, penalties, own goals
